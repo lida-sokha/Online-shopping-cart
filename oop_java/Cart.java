@@ -37,6 +37,6 @@ public class Cart {
         }
         return total;
     }
-
+}
     // Getters
-   
+
