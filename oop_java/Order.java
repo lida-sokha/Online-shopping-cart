@@ -4,11 +4,11 @@ import java.util.List;
 public class Order {
     private String orderId;
     private String userId;
-    private List<CartItem> items;
+    private List<CartItem> items;//import from java library//
     private double totalPrice;
     private double tax;
-    private Payment paymentMethod;
-    private Date orderDate;
+    private Payment paymentMethod;//payment is a class//
+    private Date orderDate;//import from java library//
     private String status;
 
     // Constructor
@@ -37,6 +37,5 @@ public class Order {
     public Payment getPaymentMethod() { return paymentMethod; }
     public Date getOrderDate() { return orderDate; }
     public String getStatus() { return status; }
-
     public void setStatus(String status) { this.status = status; }
 }
