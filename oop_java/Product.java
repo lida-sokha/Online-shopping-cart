@@ -15,7 +15,7 @@ public class Product {
         this.category = category;
         this.description = description;
     }
-
+    
     // Getters and Setters
     public String getProductId() { return productId; }
     public String getName() { return name; }
