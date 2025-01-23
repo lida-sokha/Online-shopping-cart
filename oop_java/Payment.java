@@ -1,10 +1,10 @@
 public class Payment {
-    private double amount;
-    private int day;
-    private int month;
-    private int year;
-    private static int nextpayID=1;
-    private int payID;
+    double amount;
+    int day;
+    int month;
+    int year;
+    int nextpayID=1;
+    int payID;
 
     public Payment(int day, int month, int year, double amount){
         this.payID=nextpayID++;
