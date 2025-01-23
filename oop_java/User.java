@@ -1,11 +1,11 @@
 public class User {
-    private String name;
-    private static int nextuserID=1;
-    private int userID;
-    private String address;
-    private String email;
-    private String password;
-    private String phoneNumber;
+    String name;
+    int nextuserID=1;
+    int userID;
+    String address;
+    String email;
+    String password;
+    String phoneNumber;
 
     //Constructor
     public User(String name, String email, String address, String password, String phoneNumber){
