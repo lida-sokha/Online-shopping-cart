@@ -1,10 +1,10 @@
 public class Product {
-    private String productId;
-    private String name;
-    private double price;
-    private int quantity;
-    private String category;
-    private String description;
+     String productId;
+     String name;
+     double price;
+     int quantity;
+     String category;
+     String description;
 
     // Constructor
     public Product(String productId, String name, double price, int quantity, String category, String description) {

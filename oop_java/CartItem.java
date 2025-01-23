@@ -1,6 +1,6 @@
 public class CartItem {
-    private Product product;
-    private int quantity;
+     Product product;
+     int quantity;
 
     // Constructor
     public CartItem(Product product, int quantity) {
@@ -9,14 +9,14 @@ public class CartItem {
     }
 
     // Getters
-    public Product getProduct() { return product; }
-    public int getQuantity() { return quantity; }
+    // public Product getProduct() { return product; }
+    // public int getQuantity() { return quantity; }
 
     // Setter
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    // public void setQuantity(int quantity) { this.quantity = quantity; }
 
     // Calculate total price for this item
-    public double getTotalPrice() {
-        return product.getPrice() * quantity;
-    }
+    // public double getTotalPrice() {
+    //     return product.getPrice() * quantity;
+    // }
 }

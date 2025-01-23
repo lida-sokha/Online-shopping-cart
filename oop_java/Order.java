@@ -2,14 +2,14 @@ import java.util.Date;
 import java.util.List;
 
 public class Order {
-    private String orderId;
-    private String userId;
-    private List<CartItem> items;//import from java library//
-    private double totalPrice;
-    private double tax;
-    private Payment paymentMethod;//payment is a class//
-    private Date orderDate;//import from java library//
-    private String status;
+     String orderId;
+     String userId;
+     List<CartItem> items;//import from java library//
+     double totalPrice;
+     double tax;
+     Payment paymentMethod;//payment is a class//
+     Date orderDate;//import from java library//
+     String status;
 
     // Constructor
     public Order(String orderId, String userId, List<CartItem> items, double totalPrice, double tax, Payment paymentMethod, Date orderDate, String status) {

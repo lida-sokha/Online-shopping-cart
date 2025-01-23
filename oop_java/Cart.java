@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cart {
-    private String cartId;
-    private String userId;
-    private List<CartItem> items;
+     String cartId;
+     String userId;
+     List<CartItem> items;
 
     // Constructor
     public Cart(String cartId, String userId) {
