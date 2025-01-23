@@ -1,5 +1,5 @@
 public class CartItem {
-     Product product;
+     Product product;// data type private oy class product 
      int quantity;
 
     // Constructor
@@ -8,15 +8,5 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    // Getters
-    // public Product getProduct() { return product; }
-    // public int getQuantity() { return quantity; }
-
-    // Setter
-    // public void setQuantity(int quantity) { this.quantity = quantity; }
-
-    // Calculate total price for this item
-    // public double getTotalPrice() {
-    //     return product.getPrice() * quantity;
-    // }
+   
 }

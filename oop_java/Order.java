@@ -23,19 +23,4 @@ public class Order {
         this.status = status;
     }
 
-    // Calculate the final total price including tax
-    public double calculateFinalPrice() {
-        return totalPrice + tax;
-    }
-
-    // Getters and Setters
-    public String getOrderId() { return orderId; }
-    public String getUserId() { return userId; }
-    public List<CartItem> getItems() { return items; }
-    public double getTotalPrice() { return totalPrice; }
-    public double getTax() { return tax; }
-    public Payment getPaymentMethod() { return paymentMethod; }
-    public Date getOrderDate() { return orderDate; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
 }
