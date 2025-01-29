@@ -17,9 +17,11 @@ public class Main {
         System.out.println();
         System.out.println(user3);
         System.out.println("//-----------------------------------------//"+ "\n");
-        Payment lika = new Payment(1,1,2025, 12.5);
-        System.out.println(lika);
-        Payment lika1 = new Payment(1,1,2025, 12.5);
-        System.out.println(lika1);
+        Payment p1 = new Payment(150.75);  // No need to input date & time
+        Payment p2 = new Payment(500.00);  // Auto-generates timestamp
+
+        System.out.println(p1);
+        System.out.println(p2);
+        System.out.println("//-----------------------------------------//"+ "\n");
     }
 }
