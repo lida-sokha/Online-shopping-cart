@@ -2,7 +2,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Order {
-     String orderId;
+     String orderId;//change to array
      String userId;
      List<CartItem> items;//import from java library//
      double totalPrice;

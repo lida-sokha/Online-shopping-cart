@@ -2,13 +2,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Payment {
-    private static int nextpayID=1;
+    private static int nextpaymentID=0;
     private int payID;
     private double amount;
     private LocalDateTime paymenDateTime;
 
     public Payment(double amount){//class scope is initialize the payid, amount, paymendate
-        this.payID=nextpayID++;
+        this.payID=++nextpaymentID;
         this.amount=amount;
         this.paymenDateTime=LocalDateTime.now();
     }
@@ -16,6 +16,7 @@ public class Payment {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return paymenDateTime.format(formatter);
     }
+
     public String toString(){// class scope return to string 
         return "PayID: " + payID + "\n" +
                 "Amount: " + amount + "\n" +

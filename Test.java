@@ -1,4 +1,4 @@
-public class Main {
+public class Test {
     public static void main(String[] args) {
         // try {
         //     User user = new User("Alice", "alice@example.com", "123 Main St", "short1234567", "1234567890");
@@ -13,14 +13,19 @@ public class Main {
     System.out.println("//-----------------------------------------//"+ "\n");
         System.out.println(user1);
         System.out.println();
+    System.out.println("//-----------------------------------------//"+ "\n");
+        // user2.getUserId();
+
         System.out.println(user2);
         System.out.println();
+    System.out.println("//-----------------------------------------//"+ "\n");
+        // user3.getUserId();
         System.out.println(user3);
         System.out.println("//-----------------------------------------//"+ "\n");
         Payment p1 = new Payment(150.75);  // No need to input date & time
         Payment p2 = new Payment(500.00);  // Auto-generates timestamp
-
         System.out.println(p1);
+        System.out.println("//-----------------------------------------//"+ "\n");
         System.out.println(p2);
         System.out.println("//-----------------------------------------//"+ "\n");
     }
