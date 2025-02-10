@@ -72,7 +72,6 @@ import java.util.ArrayList;
             for(User user : users){
                 if(user.getemail().equalsIgnoreCase(email)){
                     if(user.checkpassword(password)){
-                        System.out.println("Login successful: welcome "+ user.getname()+ "!");
                         return true;
                     }
                     else{

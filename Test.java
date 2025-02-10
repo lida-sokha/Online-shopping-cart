@@ -43,7 +43,7 @@ public class Test {
                         System.out.println("Sign up failed. Please try again.");
                     }
                     else{
-                        System.out.println("Sign up sccessfully");
+                        System.out.println("Sign up successfully\n");
                     }
                     break;
 
@@ -61,6 +61,9 @@ public class Test {
                     boolean loginSuccess = User.login(loginEmail, loginPassword);
                     if (!loginSuccess) {
                         System.out.println("Login failed. Please check your credentials.");
+                    }
+                    else{
+                        System.out.println("Login successfully\n");
                     }
                     break;
 
