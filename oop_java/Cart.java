@@ -14,7 +14,7 @@ public class Cart {
     }
     //getter
     public int getuserID(){
-        return userID.getUserId();
+        return userID.getuserID();
     }
 
     public String toString(){
