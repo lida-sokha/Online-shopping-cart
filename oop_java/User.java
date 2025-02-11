@@ -52,15 +52,15 @@ import java.util.ArrayList;
                 System.out.println("Invalid email");
                 return false;
             }
-            if(password==null || password.trim().isEmpty()){
+            if(password==null || password.isEmpty()){
                 System.out.println("Password can't be empty!");
                 return false;
             }
-            if(address==null || address.trim().isEmpty()){
+            if(address==null || address.isEmpty()){
                 System.out.println("address can't be empty!");
                 return false;
             }
-            if(password==null || password.trim().isEmpty()){
+            if(password==null || password.isEmpty()){
                 System.out.println("password can't be empty!");
                 return false;
             }
