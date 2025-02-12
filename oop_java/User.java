@@ -30,47 +30,25 @@ import java.util.Scanner;
         public String getRole() {
             return role;
         }
-            //log in
-        public boolean signup(){
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter name: ");
-            String name = scanner.nextLine();
-            System.out.print("Enter Email: ");
-            String email = scanner.nextLine();
-            System.out.print("Enter Address: ");
-            String address = scanner.nextLine();
-            System.out.print("Enter Password: ");
-            String password = scanner.nextLine();
-            System.out.print("Enter Phone Number: ");
-            String phoneNumber = scanner.nextLine();
-
-            for(User user : users){
-                if(user.getEmail().equals(email)){
-                    System.out.println("User with this email already exists! Try again.");
+        public boolean signUp(){
+            for(User user: users){
+                // looking at in the list match the email address of the current user (this) who is trying to sign up?"
+                if(user.getEmail().equals(this.email)){
+                    System.out.println("Email is ready exit");
                     return false;
                 }
             }
-            String role;
-            if(email.endsWith("@company.com")){
-                role="staff";
-            }
-            else{
-                role="customer";
-            }
-            User newUser = new User(name, email, address, password, phoneNumber, role);
-            users.add(newUser);
-            System.out.println("User registered successfully as" + newUser.getRole());
-
+            users.add(this);//add current user to the user arraylist
+            System.out.println("Sign up successful");
             return true;
         }
-        //login 
-        public boolean login(String email, String password){
+        public User login(String email, String password){
             for(User user : users){
                 if(user.getEmail().equals(email) && user.getPassword().equals(password)){
-                    return true;
+                    return user;
                 }
             }
-            System.out.println("Invalid email or password!");
-            return false;
+            System.out.println("Invalid email or password.");
+            return null;
         }
     }

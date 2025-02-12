@@ -13,8 +13,8 @@ public class Cart {
         this.items = new ArrayList<>();//array list
     }
     //getter
-    public int getuserID(){
-        return userID.userId;
+    public User getuserID(){
+        return userID;
     }
 
     public String toString(){
