@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-
+import java.util.Scanner;
     public class User {
         private String name;
         private static int nextuserID=0;
@@ -8,81 +8,69 @@ import java.util.ArrayList;
         private String email;
         private String password;
         private String phoneNumber;
+        private String role; // staff or customer
 
         private static ArrayList<User> users= new ArrayList<>();
         //Constructor
-        public User(String name, String email, String address, String password, String phoneNumber){
+        public User(String name, String email, String address, String password, String phoneNumber, String role){
             this.userID=++nextuserID;
             this.name=name;
             this.email=email;
             this.address=address;
             this.password=password;
             this.phoneNumber=phoneNumber;
-
-        
+            this.role=role;
         }
-        public String getname(){
-            if(name==null || name.trim().isEmpty()){
-                throw new IllegalArgumentException("Name can't be empty!");
-            }
-            return name;
-        }
-        //the requirement of email
-        public String getemail(){
-            if(email==null || !email.contains("@")){
-                throw new IllegalArgumentException("Invalid email address.");
-            }
+        public String getEmail() {
             return email;
         }
-        //the requirement of password
-        public boolean checkpassword(String inputpassword){
-            return this.password.equals(inputpassword);
-        } 
-        // Get users list
-        public static ArrayList<User> getUsers() {
-            return users;
+        public String getPassword() {
+            return password;
         }
+        public String getRole() {
+            return role;
+        }
+            //log in
+        public boolean signup(){
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter name: ");
+            String name = scanner.nextLine();
+            System.out.print("Enter Email: ");
+            String email = scanner.nextLine();
+            System.out.print("Enter Address: ");
+            String address = scanner.nextLine();
+            System.out.print("Enter Password: ");
+            String password = scanner.nextLine();
+            System.out.print("Enter Phone Number: ");
+            String phoneNumber = scanner.nextLine();
 
-        public static boolean signUp(String name, String email, String address, String password, String phoneNumber){
-            if(name==null || name.trim().isEmpty()){
-                System.out.println("Name can't be empty!");
-            return false;
-            }
-            if(email==null || !email.contains("@")){
-                System.out.println("Invalid email");
-                return false;
-            }
-            if(password==null || password.isEmpty()){
-                System.out.println("Password can't be empty!");
-                return false;
-            }
-            if(address==null || address.isEmpty()){
-                System.out.println("address can't be empty!");
-                return false;
-            }
-            if(password==null || password.isEmpty()){
-                System.out.println("password can't be empty!");
-                return false;
-            }
-            User newUser = new User(name, email, address, password, phoneNumber);
-            users.add(newUser);
-            return true;
-        }
-        public static boolean login(String email, String password){
             for(User user : users){
-                if(user.getemail().equalsIgnoreCase(email)){
-                    if(user.checkpassword(password)){
-                        return true;
-                    }
-                    else{
-                        System.out.println("Error incorrect password");
-                        return false;
-                    }
+                if(user.getEmail().equals(email)){
+                    System.out.println("User with this email already exists! Try again.");
+                    return false;
                 }
             }
-            System.out.println("Error: Email not found.");
-            return false;
-        }   
-        
+            String role;
+            if(email.endsWith("@company.com")){
+                role="staff";
+            }
+            else{
+                role="customer";
+            }
+            User newUser = new User(name, email, address, password, phoneNumber, role);
+            users.add(newUser);
+            System.out.println("User registered successfully as" + newUser.getRole());
 
+            return true;
+        }
+        //login 
+        public boolean login(String email, String password){
+            for(User user : users){
+                if(user.getEmail().equals(email) && user.getPassword().equals(password)){
+                    return true;
+                }
+            }
+            System.out.println("Invalid email or password!");
+            return false;
+        }
     }
