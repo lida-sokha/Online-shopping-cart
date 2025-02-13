@@ -30,6 +30,7 @@ import java.util.Scanner;
         public String getRole() {
             return role;
         }
+
         public boolean signUp(){
             for(User user: users){
                 // looking at in the list match the email address of the current user (this) who is trying to sign up?"
@@ -50,5 +51,16 @@ import java.util.Scanner;
             }
             System.out.println("Invalid email or password.");
             return null;
+        }
+    @Override
+    public String toString() {
+        return "User{" +
+                "userID=" + userID +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", role='" + role + '\'' +
+                '}';
         }
     }
