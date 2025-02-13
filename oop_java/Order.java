@@ -5,7 +5,7 @@ public class Order {
     // Private fields to protect data
     private  String orderId;
     private  String userId;
-    private List<CartItem> items;  // Assuming CartItem class is already defined
+    private  List<CartItem> items;  // Assuming CartItem class is already defined
     private  double totalPrice;
     private  double taxRate;  // Tax rate in percentage
     private  double tax;
