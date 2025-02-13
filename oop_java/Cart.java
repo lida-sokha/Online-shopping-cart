@@ -1,11 +1,9 @@
 import java.util.ArrayList;
-import java.util.List;//array list or link list 
 
 public class Cart {
     private String cartId;
     private User userID; //want to use the same userid from the user class
-    private List<CartItem> items;
-
+    private ArrayList<CartItem> items;
     // Constructor
     public Cart(String cartId, String userId) {
         this.cartId = cartId;

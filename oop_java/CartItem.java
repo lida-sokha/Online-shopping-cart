@@ -2,7 +2,7 @@ public class CartItem {
     // Private fields to protect data
     private Product product;
     private int quantity;
-
+    
     // Constructor to initialize fields
     public CartItem(Product product, int quantity) {
         this.product = product;
@@ -22,7 +22,7 @@ public class CartItem {
     public int getQuantity() {
         return quantity;
     }
-    
+
     // Optional: toString() for easy printing
     @Override
     public String toString() {
