@@ -30,6 +30,7 @@ import java.util.Scanner;
         public String getRole() {
             return role;
         }
+    
 
         public boolean signUp(){
             for(User user: users){
