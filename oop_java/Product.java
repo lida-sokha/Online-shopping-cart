@@ -41,28 +41,5 @@ public class Product {
         return description;
     }
 
-    // Setters (to change the fields)
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
+   
 }
