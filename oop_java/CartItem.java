@@ -22,14 +22,6 @@ public class CartItem {
     public int getQuantity() {
         return quantity;
     }
-
-    public void setQuantity(int quantity) {
-        if (quantity > 0) {
-            this.quantity = quantity;
-        } else {
-            System.out.println("Quantity must be positive!");
-        }
-    }
     
     // Optional: toString() for easy printing
     @Override
