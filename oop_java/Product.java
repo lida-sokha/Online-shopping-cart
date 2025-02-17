@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class Product {
     private String productId;
     private String name;
@@ -6,6 +8,9 @@ public class Product {
     private String category;
     private String description;
 
+   // protected from direct access or modification by other classes, enforcing encapsulation and maintaining control over how the catalog is accessed and updated.//
+    private static HashMap<String, Product> productCatalog = new HashMap<>();
+
     public Product(String productId, String name, double price, int quantity, String category, String description) {
         this.productId = productId;
         this.name = name;
@@ -13,6 +18,8 @@ public class Product {
         this.quantity = quantity;
         this.category = category;
         this.description = description;
+        // Add the product to the catalog when it's created
+        productCatalog.put(productId, this);
     }
 
     // Getters (to read the fields)
@@ -78,5 +85,29 @@ public class Product {
     @Override
     public String toString() {
         return "Product [ID=" + productId + ", Name=" + name + ", Price=" + price + ", Quantity=" + quantity + ", Category=" + category + "]";
+    }
+
+    // Static methods to interact with the product catalog (HashMap)
+
+    // Add a product to the catalog
+    public static void addProduct(Product product) {
+        productCatalog.put(product.getProductId(), product);
+    }
+
+    // Get a product by productId
+    public static Product getProductById(String productId) {
+        return productCatalog.get(productId);
+    }
+
+    // Remove a product by productId
+    public static Product removeProduct(String productId) {
+        return productCatalog.remove(productId);
+    }
+
+    // Display all products
+    public static void displayAllProducts() {
+        for (Product product : productCatalog.values()) {
+            System.out.println(product);
+        }
     }
 }

@@ -1,21 +1,8 @@
     public static void main(String[] args) {
-        // Sign up users
-        User.signup();
+        UserInterface user1 = new Customer("Alice", "alice@example.com", "123 Street", "password123", "555-1234");
+        UserInterface user2 = new Staff("Bob", "bob@example.com", "456 Avenue", "securePass", "555-5678", "IT");
 
-        // Login and check role
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter email to login: ");
-        String email = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-        User loggedInUser = User.login(email, password);
-        if (loggedInUser != null) {
-            System.out.println("Login successful! Role: " + loggedInUser.getRole());
-            if ("Staff".equals(loggedInUser.getRole())) {
-                System.out.println("Redirecting to Staff Portal...");
-            } else {
-                System.out.println("Redirecting to Customer Dashboard...");
-            }
-        }
+        user1.displayUserInfo();
+        System.out.println();
+        user2.displayUserInfo();
     }
