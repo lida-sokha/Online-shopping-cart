@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-public class Product{
+public class Product {
     private String productId;
     private String name;
     private double price;
@@ -8,7 +8,6 @@ public class Product{
     private String category;
     private String description;
 
-   // protected from direct access or modification by other classes, enforcing encapsulation and maintaining control over how the catalog is accessed and updated.//
     private static HashMap<String, Product> productCatalog = new HashMap<>();
 
     public Product(String productId, String name, double price, int quantity, String category, String description) {
@@ -18,11 +17,10 @@ public class Product{
         this.quantity = quantity;
         this.category = category;
         this.description = description;
-        // Add the product to the catalog when it's created
         productCatalog.put(productId, this);
     }
 
-    // Getters (to read the fields)
+    // Getters
     public String getProductId() {
         return productId;
     }
@@ -42,67 +40,61 @@ public class Product{
         return description;
     }
 
-    // Update quantity
-    public void updateQuantity(int newQuantity) {
-        if (newQuantity >= 0) {
-            this.quantity = newQuantity;
-        } else {
-            System.out.println("Quantity cannot be negative!");
-        }
+    // Customer functions
+
+    // View product details
+    public void viewProductDetails() {
+        System.out.println("Product ID: " + productId);
+        System.out.println("Name: " + name);
+        System.out.println("Price: $" + price);
+        System.out.println("Available Quantity: " + quantity);
+        System.out.println("Category: " + category);
+        System.out.println("Description: " + description);
     }
 
-    // Sell product (reduce quantity)
-    public boolean sell(int quantitySold) {
-        if (quantitySold > 0 && quantitySold <= quantity) {
-            this.quantity -= quantitySold;
+    // Simulate adding a product to cart
+    public void addToCart() {
+        System.out.println(name + " has been added to your cart.");
+    }
+
+    // Simulate purchasing a product
+    public boolean purchaseProduct(int quantityToBuy) {
+        if (quantityToBuy > 0 && quantityToBuy <= quantity) {
+            this.quantity -= quantityToBuy;
+            System.out.println("You have successfully purchased " + quantityToBuy + " of " + name + ".");
             return true;
         } else {
-            System.out.println("Not enough stock to sell.");
+            System.out.println("Not enough stock available.");
             return false;
         }
     }
 
-    // Apply discount
-    public void applyDiscount(double percentage) {
-        if (percentage > 0 && percentage < 100) {
-            this.price = price - (price * (percentage / 100));
-        } else {
-            System.out.println("Invalid discount percentage.");
-        }
+    // Leave a review
+    public void leaveReview(String review) {
+        System.out.println("Review for " + name + ": " + review);
     }
 
-    // Check if in stock
-    public boolean isInStock(int requestedQuantity) {
-        return this.quantity >= requestedQuantity;
-    }
-
-    // toString for easy display
-    @Override
-    public String toString() {
-        return "Product [ID=" + productId + ", Name=" + name + ", Price=" + price + ", Quantity=" + quantity + ", Category=" + category + "]";
-    }
-
-    // Static methods to interact with the product catalog (HashMap)
-
-    // Add a product to the catalog
+    // Static methods for catalog management
     public static void addProduct(Product product) {
         productCatalog.put(product.getProductId(), product);
     }
 
-    // Get a product by productId
     public static Product getProductById(String productId) {
         return productCatalog.get(productId);
     }
 
-    // Remove a product by productId
     public static Product removeProduct(String productId) {
         return productCatalog.remove(productId);
     }
 
-    // Display all products
     public static void displayAllProducts() {
         for (Product product : productCatalog.values()) {
             System.out.println(product);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Product [ID=" + productId + ", Name=" + name + ", Price=" + price + ", Quantity=" + quantity + ", Category=" + category + "]";
     }
 }

@@ -17,4 +17,5 @@ public interface ProductInterface {
     static Product getProductById(String productId) { return null; }
     static Product removeProduct(String productId) { return null; }
     static void displayAllProducts() {}
+
 }
