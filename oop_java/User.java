@@ -74,10 +74,15 @@ public abstract class User{
         String phoneNumber = scanner.nextLine();
     
         // Create the new user
-        User newUser = new User(name, email, address, password, phoneNumber, role);
+        User newUser;
+        if(role.equals("seller")){
+            newUser = new Seller(name, email, address, password, phoneNumber);
+        }
+        else{
+            newUser = new Customer(name, email, email, password, phoneNumber);
+        }
         users.put(email, newUser);
         System.out.println("Sign up successful as " + role);
-    
         return newUser;
     }
     

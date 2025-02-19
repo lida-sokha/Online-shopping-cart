@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Seller extends User {
     private List<String> productId_list;
     public Seller(String name, String email,String address,String password,String phoneNumber){
-        super(name, email, address, password, phoneNumber, phoneNumber);
+        super(name, email, address, password, phoneNumber, "Seller");
         this.productId_list= new ArrayList<>();
     }
     @Override 
