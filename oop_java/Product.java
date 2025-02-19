@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-public class Product implements ProductInterface{
+public class Product{
     private String productId;
     private String name;
     private double price;
@@ -23,27 +23,21 @@ public class Product implements ProductInterface{
     }
 
     // Getters (to read the fields)
-    @Override
     public String getProductId() {
         return productId;
     }
-    @Override
     public String getName() {
         return name;
     }
-    @Override
     public double getPrice() {
         return price;
     }
-    @Override
     public int getQuantity() {
         return quantity;
     }
-    @Override
     public String getCategory() {
         return category;
     }
-    @Override
     public String getDescription() {
         return description;
     }

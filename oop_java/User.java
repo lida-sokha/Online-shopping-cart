@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class User{
+public abstract class User{
     private String name;
     private static int nextUserID = 0;
     private int userID;
@@ -29,10 +29,8 @@ public class User{
         return email;
     }
 
-    public String getRole() {
-        return role;
-    }
-
+    public abstract String getRole();
+    
     public void displayUserInfo() {
         System.out.println("User ID: " + userID);
         System.out.println("Name: " + name);
@@ -44,7 +42,7 @@ public class User{
         Scanner scanner = new Scanner(System.in);
     
         // Ask for role first
-        String role = "";
+        String role;
         while (true) {
             System.out.println("Enter role (staff/customer): ");
             role = scanner.nextLine().toLowerCase();
