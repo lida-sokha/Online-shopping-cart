@@ -1,71 +1,77 @@
-import  java.util.List;
 import java.util.ArrayList;
 
-
 public class Seller extends User {
-    private List<String> productId_list;
-    public Seller(String name, String email,String address,String password,String phoneNumber){
+    private ArrayList<String> productIdList;
+
+    public Seller(String name, String email, String address, String password, String phoneNumber) {
         super(name, email, address, password, phoneNumber, "Seller");
-        this.productId_list= new ArrayList<>();
+        this.productIdList = new ArrayList<>();
     }
-    @Override 
-    public String getRole(){
-        return "seller";
+
+    @Override
+    public String getRole() {
+        return "Seller";
     }
-    //add item
-    public void addProduct(String product,String name,double price, int quantity,String category,String description){
-        if (Product.getProductById(product) != null){
-            System.out.println("the product is order exit! add other product");
-            return;
+
+    // Add a product
+    public void addProduct(String productId, String name, double price, int quantity, String category, String description) {
+        if (Product.getProductById(productId) != null) {
+            System.out.println("Product already exists. Please add a different product.");
+        } else {
+            Product newProduct = new Product(productId, name, price, quantity, category, description);
+            productIdList.add(productId);
+            System.out.println(name + " has been added successfully!");
         }
-        else{
-            Product new_product = new Product(product, name, price, quantity, category, description);
-            productId_list.add(product);
-            System.out.println("product add successfully" + name);
-        }
     }
-    //remove 
-    public void removeProduct(String productID){
-        if(productId_list.contains(productID)){
-            Product removed = Product.removeProduct(productID);
-            if(removed != null){
-                productId_list.remove(productID);
-                System.out.println("Product have been remove");
+
+    // Remove a product
+    public void removeProduct(String productId) {
+        if (productIdList.contains(productId)) {
+            Product removedProduct = Product.removeProduct(productId);
+            if (removedProduct != null) {
+                productIdList.remove(productId);
+                System.out.println("Product has been removed.");
+            } else {
+                System.out.println("Failed to remove the product.");
             }
-            else{
-                System.out.println("Failed to remove the product");
-            }
+        } else {
+            System.out.println("Product not found in your catalog.");
         }
     }
-    //check the detail of the product
-    public void checkProduct(String productID){
-        Product product = Product.getProductById(productID);
-        if(product != null){
-            System.out.println(product);
-        }
-        else{
-            System.out.println("Product not found");
+
+    // View product details
+    public void checkProduct(String productId) {
+        Product product = Product.getProductById(productId);
+        if (product != null) {
+            product.viewProductDetails();  // Using Product method to view details
+        } else {
+            System.out.println("Product not found.");
         }
     }
-    //sell the product
-    public void sellProduct(String productID, int quantitySold){
-        Product product = Product.getProductById(productID);
-        if(product !=null && productId_list.contains(productID)){   
-            if(product.sell(quantitySold)){
+
+    // Sell a product
+    public void sellProduct(String productId, int quantitySold) {
+        Product product = Product.getProductById(productId);
+        if (product != null && productIdList.contains(productId)) {
+            if (product.sell(quantitySold)) {
                 System.out.println(quantitySold + " units of " + product.getName() + " sold.");
+            } else {
+                System.out.println("Not enough stock to sell.");
             }
-            else{
-                System.out.println("Product not found or you don't have permission to sell this.");
-            }
+        } else {
+            System.out.println("Product not found or you don't have permission to sell this product.");
         }
     }
+
     // Display all products added by the seller
     public void displayMyProducts() {
         System.out.println("Your Products:");
-        for (String productId : productId_list) {
+        for (String productId : productIdList) {
             Product product = Product.getProductById(productId);
             if (product != null) {
                 System.out.println(product);
+            } else {
+                System.out.println("Product not found.");
             }
         }
     }

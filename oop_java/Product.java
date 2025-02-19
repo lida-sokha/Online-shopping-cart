@@ -39,7 +39,16 @@ public class Product {
     public String getDescription() {
         return description;
     }
-
+    //seller
+    public boolean sell(int quantitySold) {
+        if (quantitySold > 0 && quantitySold <= quantity) {
+            this.quantity -= quantitySold;
+            return true;
+        } else {
+            System.out.println("Not enough stock to sell.");
+            return false;
+        }
+    }
     // Customer functions
 
     // View product details
