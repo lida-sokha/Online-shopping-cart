@@ -1,4 +1,4 @@
-import  java.util.List;
+
 import java.util.ArrayList;
 
 public class Customer extends User {
@@ -35,19 +35,23 @@ public class Customer extends User {
         }
     }
     //purchase
-    public boolean purchaseProduct(String productID, int quantityToBuy){
+    public boolean purchaseProduct(String productID, int quantityToBuy) {
         Product product = Product.getProductById(productID);
-        if (product != null) {
-            boolean success = product.purchaseProduct(quantityToBuy);
-            if (success) {
-                Cart.remove(productID); // Remove from cart if purchase is successful
-            }
-            return success;
-        } else {
-            System.out.println("Product not found.");
-            return false;
+        
+        if (product == null) {
+            return false; // Product does not exist
         }
+    
+        if (!product.sell(quantityToBuy)) {
+            return false; // Not enough stock
+        }
+    
+        Cart cart = Cart.getInstance(); // Assuming Cart is a singleton or globally managed
+        cart.removeProduct(productID);  // Remove from cart after purchase
+    
+        return true; // Purchase successful
     }
+    
     public void leaveReview(String productId, String review) {
         Product product = Product.getProductById(productId);
         if (product != null) {
