@@ -1,6 +1,6 @@
 import java.util.HashMap;
 
-public class Customer extends User {
+public class Customer extends User implements CustomerInterface {
     private static HashMap<String, Customer> customerMap = new HashMap<>(); // Store customers using email as key
     private HashMap<String, Integer> cart; // Store productID and quantity
 
@@ -19,8 +19,8 @@ public class Customer extends User {
     public static HashMap<String, Customer> getAllCustomers() {
         return customerMap;
     }
-
     // Add product to cart
+    @Override
     public void addToCart(String productID, int quantity) {
         Product product = Product.getProductById(productID);
         if (product != null) {
@@ -32,6 +32,7 @@ public class Customer extends User {
     }
 
     // Purchase product
+    @Override
     public boolean purchaseProduct(String productID, int quantityToBuy) {
         Product product = Product.getProductById(productID);
 
@@ -44,6 +45,7 @@ public class Customer extends User {
     }
 
     // View cart
+    @Override
     public void viewCart() {
         if (cart.isEmpty()) {
             System.out.println("Your cart is empty.");
@@ -59,6 +61,7 @@ public class Customer extends User {
     }
 
     // Leave a review 
+    @Override
     public void leaveReview(String productId, String review) {
         Product product = Product.getProductById(productId);
         if (product != null) {
@@ -68,10 +71,9 @@ public class Customer extends User {
             System.out.println("Product not found.");
         }
     }
-
     // Get customer details
     @Override
     public String toString() {
         return "Customer{name='" + getName() + "', email='" + getEmail() + "', phone='" + getPhoneNumber() + "'}";
-    }
+                    }
 }

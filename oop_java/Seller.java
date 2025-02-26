@@ -2,7 +2,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Seller extends User {
+
+public class Seller extends User implements SellerInterface {
     private ArrayList<String> productIdList;
 
     public Seller(String name, String email, String address, String password, String phoneNumber) {
@@ -20,55 +21,8 @@ public String getEmail() {
     public String toString() {
         return "Seller: " + getName() + " | Email: " + getEmail();
     }
-    // SellerDirectory class to manage sellers
-    public static class SellerDirectory {
-    // HashMap to store sellers with their email as the key
-    private Map<String, Seller> sellers = new HashMap<>();
 
-    // Add a new seller to the HashMap
-    public void addSeller(Seller seller) {
-        if (sellers.containsKey(seller.getEmail())) {
-            System.out.println("Seller with this email already exists.");
-        } else {
-            sellers.put(seller.getEmail(), seller);  // Add seller using their email as the key
-            System.out.println("Seller " + seller.getName() + " added successfully.");
-        }
-    }
-
-    // Get a seller by email
-    public Seller getSeller(String email) {
-        Seller seller = sellers.get(email);
-        if (seller != null) {
-            return seller;
-        } else {
-            System.out.println("Seller not found.");
-            return null;
-        }
-    }
-
-    // Remove a seller from the HashMap
-    public void removeSeller(String email) {
-        if (sellers.containsKey(email)) {
-            sellers.remove(email);
-            System.out.println("Seller removed.");
-        } else {
-            System.out.println("Seller not found.");
-        }
-    }
-
-    //get the tostring method
     @Override
-    public String toString() {
-        return "SellerDirectory{" +
-                "sellers=" + sellers +
-                '}';
-    }
-
-}
-
-
-
-    // Add a product
     public void addProduct(String productId, String name, double price, int quantity, String category, String description) {
         if (Product.getProductById(productId) != null) {
             System.out.println("Product already exists. Please add a different product.");
@@ -79,7 +33,7 @@ public String getEmail() {
         }
     }
 
-    // Remove a product
+    @Override
     public void removeProduct(String productId) {
         if (productIdList.contains(productId)) {
             Product removedProduct = Product.removeProduct(productId);
@@ -94,17 +48,17 @@ public String getEmail() {
         }
     }
 
-    // View product details
+    @Override
     public void checkProduct(String productId) {
         Product product = Product.getProductById(productId);
         if (product != null) {
-            product.viewProductDetails();  // Using Product method to view details
+            product.viewProductDetails();
         } else {
             System.out.println("Product not found.");
         }
     }
 
-    // Sell a product
+    @Override
     public void sellProduct(String productId, int quantitySold) {
         Product product = Product.getProductById(productId);
         if (product != null && productIdList.contains(productId)) {
@@ -118,7 +72,7 @@ public String getEmail() {
         }
     }
 
-    // Display all products added by the seller
+    @Override
     public void displayMyProducts() {
         System.out.println("Your Products:");
         for (String productId : productIdList) {
@@ -128,6 +82,44 @@ public String getEmail() {
             } else {
                 System.out.println("Product not found.");
             }
+        }
+    }
+
+    // Nested class for managing sellers
+    public static class SellerDirectory {
+        private Map<String, Seller> sellers = new HashMap<>();
+
+        public void addSeller(Seller seller) {
+            if (sellers.containsKey(seller.getEmail())) {
+                System.out.println("Seller with this email already exists.");
+            } else {
+                sellers.put(seller.getEmail(), seller);
+                System.out.println("Seller " + seller.getName() + " added successfully.");
+            }
+        }
+
+        public Seller getSeller(String email) {
+            Seller seller = sellers.get(email);
+            if (seller != null) {
+                return seller;
+            } else {
+                System.out.println("Seller not found.");
+                return null;
+            }
+        }
+
+        public void removeSeller(String email) {
+            if (sellers.containsKey(email)) {
+                sellers.remove(email);
+                System.out.println("Seller removed.");
+            } else {
+                System.out.println("Seller not found.");
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "SellerDirectory{" + "sellers=" + sellers + '}';
         }
     }
 }

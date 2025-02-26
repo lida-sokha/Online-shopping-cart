@@ -38,7 +38,6 @@ public abstract class User{
     public String getPassword() {
         return password;
     }
-
     public User signUp() {
         Scanner scanner = new Scanner(System.in);
     
@@ -107,4 +106,5 @@ public abstract class User{
                 ", role='" + role + '\'' +
                 '}';
     }
+    protected abstract String getPhoneNumber();
 }
