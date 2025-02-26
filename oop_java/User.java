@@ -29,14 +29,17 @@ public abstract class User{
         return email;
     }
 
-    public abstract String getRole();
-    
-    public void displayUserInfo() {
-        System.out.println("User ID: " + userID);
-        System.out.println("Name: " + name);
-        System.out.println("Email: " + email);
-        System.out.println("Role: " + role);
+    public String getRole()
+    {
+        return role;
     }
+    
+    // public void displayUserInfo() {
+    //     System.out.println("User ID: " + userID);
+    //     System.out.println("Name: " + name);
+    //     System.out.println("Email: " + email);
+    //     System.out.println("Role: " + role);
+    // }
 
     public User signUp() {
         Scanner scanner = new Scanner(System.in);

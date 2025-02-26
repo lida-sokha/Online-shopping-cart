@@ -3,6 +3,7 @@ public class CartItem {
     private Product product;
     private int quantity;
     
+    
     // Constructor to initialize fields
     public CartItem(Product product, int quantity) {
         this.product = product;

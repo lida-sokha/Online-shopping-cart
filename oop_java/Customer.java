@@ -8,11 +8,6 @@ public class Customer extends User {
         this.Cart = new ArrayList<>();
     }
 
-    @Override
-    public String getRole() {
-        return "customer";
-    }
-
     //view product 
     public void viewProductDetails(String productID){
         Product product = Product.getProductById(productID);

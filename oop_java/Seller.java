@@ -8,10 +8,6 @@ public class Seller extends User {
         this.productIdList = new ArrayList<>();
     }
 
-    @Override
-    public String getRole() {
-        return "Seller";
-    }
 
     // Add a product
     public void addProduct(String productId, String name, double price, int quantity, String category, String description) {
