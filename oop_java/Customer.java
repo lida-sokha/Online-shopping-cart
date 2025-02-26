@@ -72,8 +72,8 @@ public class Customer extends User implements CustomerInterface {
         }
     }
     // Get customer details
-    @Override
-    public String toString() {
-        return "Customer{name='" + getName() + "', email='" + getEmail() + "', phone='" + getPhoneNumber() + "'}";
-                    }
+    // @Override
+    // public String toString() {
+    //     return "Customer{name='" + getName() + "', email='" + getEmail() + "', phone='" + getPhoneNumber() + "'}";
+    //                 }
 }

@@ -106,5 +106,4 @@ public abstract class User{
                 ", role='" + role + '\'' +
                 '}';
     }
-    protected abstract String getPhoneNumber();
 }
