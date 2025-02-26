@@ -1,72 +1,77 @@
-
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Customer extends User {
-    private ArrayList<String> Cart;
+    private static HashMap<String, Customer> customerMap = new HashMap<>(); // Store customers using email as key
+    private HashMap<String, Integer> cart; // Store productID and quantity
+
     public Customer(String name, String email, String address, String password, String phoneNumber) {
         super(name, email, address, password, phoneNumber, "customer");
-        this.Cart = new ArrayList<>();
+        this.cart = new HashMap<>();
+        customerMap.put(email, this); // Store customer in HashMap using email as a unique key
     }
 
-    //view product 
-    public void viewProductDetails(String productID){
-        Product product = Product.getProductById(productID);
-        if(product !=null){
-            product.viewProductDetails(); //call method from product
-        }
-        else{
-            System.out.println("Product not found!");
-        }
+    // Retrieve customer by email
+    public static Customer getCustomerByEmail(String email) {
+        return customerMap.get(email);
     }
-    //add new product to cart
-    public void addToCart(String productID){
-        Product product = Product.getProductById(productID);
-        if(product != null){
-            Cart.add(productID);
-            System.out.println(product.getName()+"item has been add to the cart");
-        }
-        else{
-            System.out.println("Product not found");
-        }
+
+    // Retrieve all customers
+    public static HashMap<String, Customer> getAllCustomers() {
+        return customerMap;
     }
-    //purchase
-    public boolean purchaseProduct(String productID, int quantityToBuy) {
+
+    // Add product to cart
+    public void addToCart(String productID, int quantity) {
         Product product = Product.getProductById(productID);
-        
-        if (product == null) {
-            return false; // Product does not exist
-        }
-    
-        if (!product.sell(quantityToBuy)) {
-            return false; // Not enough stock
-        }
-    
-        Cart cart = Cart.getInstance(); // Assuming Cart is a singleton or globally managed
-        cart.removeProduct(productID);  // Remove from cart after purchase
-    
-        return true; // Purchase successful
-    }
-    
-    public void leaveReview(String productId, String review) {
-        Product product = Product.getProductById(productId);
         if (product != null) {
-            product.leaveReview(review);
+            cart.put(productID, cart.getOrDefault(productID, 0) + quantity);
+            System.out.println(product.getName() + " (" + quantity + " items) added to cart.");
         } else {
             System.out.println("Product not found.");
         }
     }
-    // Display cart items
+
+    // Purchase product
+    public boolean purchaseProduct(String productID, int quantityToBuy) {
+        Product product = Product.getProductById(productID);
+
+        if (product == null || !product.sell(quantityToBuy)) {
+            return false;
+        }
+
+        cart.remove(productID); // Remove from cart after purchase
+        return true;
+    }
+
+    // View cart
     public void viewCart() {
-        if (Cart.isEmpty()) {
+        if (cart.isEmpty()) {
             System.out.println("Your cart is empty.");
         } else {
             System.out.println("Your cart:");
-            for (String productId : Cart) {
+            for (String productId : cart.keySet()) {
                 Product product = Product.getProductById(productId);
                 if (product != null) {
-                    System.out.println(product);
+                    System.out.println(product.getName() + " - " + cart.get(productId) + " items");
                 }
             }
         }
+    }
+
+    // Leave a review 
+    public void leaveReview(String productId, String review) {
+        Product product = Product.getProductById(productId);
+        if (product != null) {
+            product.leaveReview(review);
+            System.out.println("Review added successfully!");
+        } else {
+            System.out.println("Product not found.");
+        }
+    }
+
+    // Get customer details
+    @Override
+    public String toString() {
+        return "Customer{name='" + getName() + "', email='" + getEmail() + "', phone='" + getPhoneNumber() + "'}";
     }
 }
