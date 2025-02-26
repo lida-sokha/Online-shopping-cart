@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Seller extends User {
     private ArrayList<String> productIdList;
@@ -7,6 +9,63 @@ public class Seller extends User {
         super(name, email, address, password, phoneNumber, "Seller");
         this.productIdList = new ArrayList<>();
     }
+//store the seller in array list
+
+// Getter for email (used as the key for the HashMap)
+public String getEmail() {
+    return super.getEmail();
+}
+
+@Override
+    public String toString() {
+        return "Seller: " + getName() + " | Email: " + getEmail();
+    }
+    // SellerDirectory class to manage sellers
+    public static class SellerDirectory {
+    // HashMap to store sellers with their email as the key
+    private Map<String, Seller> sellers = new HashMap<>();
+
+    // Add a new seller to the HashMap
+    public void addSeller(Seller seller) {
+        if (sellers.containsKey(seller.getEmail())) {
+            System.out.println("Seller with this email already exists.");
+        } else {
+            sellers.put(seller.getEmail(), seller);  // Add seller using their email as the key
+            System.out.println("Seller " + seller.getName() + " added successfully.");
+        }
+    }
+
+    // Get a seller by email
+    public Seller getSeller(String email) {
+        Seller seller = sellers.get(email);
+        if (seller != null) {
+            return seller;
+        } else {
+            System.out.println("Seller not found.");
+            return null;
+        }
+    }
+
+    // Remove a seller from the HashMap
+    public void removeSeller(String email) {
+        if (sellers.containsKey(email)) {
+            sellers.remove(email);
+            System.out.println("Seller removed.");
+        } else {
+            System.out.println("Seller not found.");
+        }
+    }
+
+    //get the tostring method
+    @Override
+    public String toString() {
+        return "SellerDirectory{" +
+                "sellers=" + sellers +
+                '}';
+    }
+
+}
+
 
 
     // Add a product

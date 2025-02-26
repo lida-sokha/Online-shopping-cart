@@ -15,7 +15,7 @@ public abstract class User{
     private static Map<String, User> users = new HashMap<>();
 
     // Constructor
-    public User(String name, String email, String address, String password, String phoneNumber, String role) {
+    User(String name, String email, String address, String password, String phoneNumber, String role) {
         this.userID = ++nextUserID;
         this.name = name;
         this.email = email;
@@ -24,7 +24,9 @@ public abstract class User{
         this.phoneNumber = phoneNumber;
         this.role = role;
     }
-
+    public String getName() {
+        return name;
+    }
     public String getEmail() {
         return email;
     }
@@ -33,13 +35,9 @@ public abstract class User{
     {
         return role;
     }
-    
-    // public void displayUserInfo() {
-    //     System.out.println("User ID: " + userID);
-    //     System.out.println("Name: " + name);
-    //     System.out.println("Email: " + email);
-    //     System.out.println("Role: " + role);
-    // }
+    public String getPassword() {
+        return password;
+    }
 
     public User signUp() {
         Scanner scanner = new Scanner(System.in);
@@ -89,16 +87,15 @@ public abstract class User{
         return newUser;
     }
     
-
     public User login(String email, String password) {
-        User user = users.get(email);
-        if (user != null && user.password.equals(password)) {
-            return user;
+        User user = users.get(email); // Fetch user from HashMap
+        if (user != null && user.getPassword().equals(password)) {
+            return user; // Return the user if password is correct
         }
         System.out.println("Invalid email or password.");
-        return null;
+        return null; // Return null if invalid credentials
     }
-
+    
     @Override
     public String toString() {
         return "User{" +
