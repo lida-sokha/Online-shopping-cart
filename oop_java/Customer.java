@@ -71,6 +71,11 @@ public class Customer extends User implements CustomerInterface {
             System.out.println("Product not found.");
         }
     }
+    // view the product from the product catalog
+    public void viewProductDetails(){
+        Product.displayAllProducts();
+    }
+    
     // Get customer details
     // @Override
     // public String toString() {

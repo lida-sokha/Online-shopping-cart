@@ -49,6 +49,7 @@ public class Product {
             return false;
         }
     }
+
     // Customer functions
 
     // View product details
@@ -97,13 +98,26 @@ public class Product {
     }
 
     public static void displayAllProducts() {
-        for (Product product : productCatalog.values()) {
-            System.out.println(product);
+        if (productCatalog.isEmpty()) {
+            System.out.println("No products available in the catalog.");
+        } else {
+            System.out.println("Available Products:");
+            for (Product product : productCatalog.values()) {
+                System.out.println("ID:"+ product.getProductId()+
+                "| Name:"+ product.getName()+
+                "| Price:"+ product.getPrice()+
+                "| Quantity:"+ product.getQuantity()+
+                "| Category:"+ product.getCategory());
+            }
         }
     }
 
     @Override
     public String toString() {
-        return "Product [ID=" + productId + ", Name=" + name + ", Price=" + price + ", Quantity=" + quantity + ", Category=" + category + "]";
+        return "Product [ID=" + productId + 
+        ", Name=" + name + 
+        ", Price=" + price + 
+        ", Quantity=" + quantity + 
+        ", Category=" + category + "]";
     }
 }
