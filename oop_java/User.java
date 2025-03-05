@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -72,9 +76,8 @@ public abstract class User{
         String password = scanner.nextLine();
 
         // Validate phone number
-        System.out.print("Enter phone number:");
+        System.out.println("Enter phone number:");
         String phoneNumber = scanner.nextLine();
-
         
         // Create the new user
         User newUser;
@@ -82,20 +85,58 @@ public abstract class User{
             newUser = new Seller(name, email, address, password, phoneNumber);
         }
         else{
-            newUser = new Customer(name, email, email, password, phoneNumber);
+            newUser = new Customer(name, email, address, password, phoneNumber);
         }
         users.put(email, newUser);
         System.out.println("Sign up successful as " + role);
+
+        //save to file
+        try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter("users.txt", true))) {
+            writer.write(name + "," + email + "," + address + "," + password + "," + phoneNumber + "," + role + "\n");
+            writer.newLine();
+            System.out.println("User saved to file.");
+        }
+        catch (Exception e) {
+            System.out.println("Error write to file.");
+        } 
         return newUser;
+        
     }
     
     public User login(String email, String password) {
-        User user = users.get(email); // Fetch user from HashMap
-        if (user != null && user.getPassword().equals(password)) {
-            return user; // Return the user if password is correct
+        String fileName = "users.txt"; // File where users are stored
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        String line;
+        
+        while ((line = reader.readLine()) != null) {
+            String[] userData = line.split(","); // Split by comma
+            
+            if (userData.length >= 6) { // Ensure data is complete
+                String storedEmail = userData[1].trim();
+                String storedPassword = userData[3].trim();
+
+                if (email.equals(storedEmail) && password.equals(storedPassword)) {
+                    // Create and return a User object
+                    String name = userData[0].trim();
+                    String address = userData[2].trim();
+                    String phoneNumber = userData[4].trim();
+                    String role = userData[5].trim();
+
+                    if (role.equalsIgnoreCase("seller")) {
+                        return new Seller(name, email, address, password, phoneNumber);
+                    } else {
+                        return new Customer(name, email, address, password, phoneNumber);
+                    }
+                }
+            }
         }
-        System.out.println("Invalid email or password.");
-        return null; // Return null if invalid credentials
+    } catch (IOException e) {
+        System.out.println("Error reading user file: " + e.getMessage());
+    }
+
+    System.out.println("Invalid email or password.");
+    return null;
     }
     
     @Override

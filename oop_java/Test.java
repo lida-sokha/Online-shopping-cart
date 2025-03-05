@@ -185,27 +185,69 @@ public class Test {
                 break;
             case 2:
             while(true){
-                System.out.print("Enter product name to buy: ");
-                String name = scanner.nextLine();
-                customer.searchProductByName(name);
+                System.out.print("Enter product ID to buy: ");
+                String productId = scanner.nextLine();
+                customer.searchProductByID(productId);
                 switch (choice) {
                     case 1:
                         //make to the payment 
+                        System.out.print("Enter quantity to buy: ");
+                            int quantityToBuy = scanner.nextInt(); 
+                            scanner.nextLine(); // Consume the newline
 
+                            boolean purchaseSuccess = customer.purchaseProduct(productId, quantityToBuy);
+
+                            if (purchaseSuccess) {
+                                System.out.print("Enter payment amount: ");
+                                double amount = scanner.nextDouble();
+                                scanner.nextLine(); // Consume newline
+
+                                System.out.print("Enter payment method (Credit Card, PayPal, etc.): ");
+                                String paymentMethod = scanner.nextLine();
+
+                                customer.makePayment(amount, paymentMethod);
+                            } else {
+                                System.out.println("Purchase failed. Either product not found or insufficient stock.");
+                            }
                         break;
                     case 2: 
-                    // add to cart first and then they have choice to keep in cart first or make the payment
-                    default:
-                        break;
-                }
+                        // Add to cart first and then they have choice to keep in cart first or make the payment
+                        System.out.print("Enter quantity to add to cart: ");
+                        int quantityToAdd = scanner.nextInt();
+                        scanner.nextLine(); // Consume the newline
+
+                        boolean addSuccess = customer.addToCart(productId, quantityToAdd);
+
+                        if (addSuccess) {
+                            System.out.println("Product added to cart successfully.");
+                            System.out.println("1. Make payment for items in cart");
+                            System.out.println("2. Keep in cart");
+                            System.out.print("Choose an option: ");
+                            int paymentChoice = scanner.nextInt();
+                            scanner.nextLine(); // Consume newline
+
+                            if (paymentChoice == 1) {
+                                System.out.print("Enter payment amount: ");
+                                double amount = scanner.nextDouble();
+                                scanner.nextLine(); // Consume newline
+                    
+                                System.out.print("Enter payment method (Credit Card, PayPal, etc.): ");
+                                String paymentMethod = scanner.nextLine();
+                    
+                                customer.makePayment(amount, paymentMethod);
+                            }
+                        } else {
+                            System.out.println("Add to cart failed. Either product not found or insufficient stock.");
+                        }
                 break;
             }
         //     case 3:
         //         System.out.println("Logging out...");
         //         return;
-            default:
-                System.out.println("Invalid choice. Try again.");
-            }
+    }
+    default:
+        System.out.println("Invalid choice. Try again.");
         }
+    }
     }
 }

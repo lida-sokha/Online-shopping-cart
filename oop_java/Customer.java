@@ -25,17 +25,34 @@ public class Customer extends User implements CustomerInterface {
     }
 
     // Add product to cart
-    @Override
-    public void addToCart(String productID, int quantity) {
-        Product product = Product.getProductById(productID);
-        if (product != null) {
-            cart.put(productID, cart.getOrDefault(productID, 0) + quantity);
-            System.out.println(product.getName() + " (" + quantity + " items) added to cart.");
-        } else {
-            System.out.println("Product not found.");
+    // @Override
+    // public void addToCart(String productID, int quantity) {
+    //     Product product = Product.getProductById(productID);
+    //     if (product != null) {
+    //         cart.put(productID, cart.getOrDefault(productID, 0) + quantity);
+    //         System.out.println(product.getName() + " (" + quantity + " items) added to cart.");
+    //     } else {
+    //         System.out.println("Product not found.");
+    //     }
+    // }
+    public boolean addToCart(String productId, int quantity) {
+        Product product = Product.getProductById(productId);
+        
+        if (product == null) {
+            System.out.println("Product not found!");
+            return false;
         }
+        
+        if (product.getQuantity() < quantity) {
+            System.out.println("Not enough stock available!");
+            return false;
+        }
+        
+        // Add the product to cart (assuming cart is a Map or List)
+        cart.put(productId, quantity);
+        return true;
     }
-
+    
     // Purchase product
     @Override
     public boolean purchaseProduct(String productID, int quantityToBuy) {
@@ -123,12 +140,14 @@ public class Customer extends User implements CustomerInterface {
     }
 
     // View products
+    @Override
     public void viewProduct() {
         Product.viewProductDetails();
     }
 
     // Search product by name
-    public void searchProductByName(String searchName) {
-        Product.searchProduct(searchName);
+    @Override
+    public void searchProductByID(String productID) {
+        Product.searchProduct(productID);
     }
 }
