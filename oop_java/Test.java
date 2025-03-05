@@ -184,10 +184,22 @@ public class Test {
                 customer.viewProduct();
                 break;
             case 2:
+            while(true){
                 System.out.print("Enter product name to buy: ");
                 String name = scanner.nextLine();
                 customer.searchProductByName(name);
+                switch (choice) {
+                    case 1:
+                        //make to the payment 
+
+                        break;
+                    case 2: 
+                    // add to cart first and then they have choice to keep in cart first or make the payment
+                    default:
+                        break;
+                }
                 break;
+            }
         //     case 3:
         //         System.out.println("Logging out...");
         //         return;
