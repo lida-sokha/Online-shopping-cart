@@ -72,10 +72,13 @@ public class Customer extends User implements CustomerInterface {
         }
     }
     // view the product from the product catalog
-    public void viewProductDetails(){
-        Product.displayAllProducts();
+    public void viewProduct(){
+        Product.viewProductDetails();
     }
-    
+    //search for the product from the product catalog by name 
+    public void searchProductByName(String ProductName){
+        Product.searchProductByName();
+    }
     // Get customer details
     // @Override
     // public String toString() {

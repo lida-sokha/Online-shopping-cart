@@ -53,13 +53,19 @@ public class Product {
     // Customer functions
 
     // View product details
-    public void viewProductDetails() {
-        System.out.println("Product ID: " + productId);
-        System.out.println("Name: " + name);
-        System.out.println("Price: $" + price);
-        System.out.println("Available Quantity: " + quantity);
-        System.out.println("Category: " + category);
-        System.out.println("Description: " + description);
+    public static void viewProductDetails() {
+        if (productCatalog.isEmpty()) {
+            System.out.println("No products available in the catalog.");
+        } else {
+            System.out.println("Available Products:");
+            for (Product product : productCatalog.values()) {
+                System.out.println("ID:"+ product.getProductId()+
+                "| Name:"+ product.getName()+
+                "| Price: $"+ product.getPrice()+
+                "| Quantity:"+ product.getQuantity()+
+                "| Category:"+ product.getCategory());
+            }
+        }
     }
 
     // Simulate adding a product to cart
@@ -97,12 +103,27 @@ public class Product {
         return productCatalog.remove(productId);
     }
 
-    public static void displayAllProducts() {
-        if (productCatalog.isEmpty()) {
-            System.out.println("No products available in the catalog.");
-        } else {
-            System.out.println("Available Products:");
-            for (Product product : productCatalog.values()) {
+    // public static Product viewProductDetails() {
+    //     if (productCatalog.isEmpty()) {
+    //         System.out.println("No products available in the catalog.");
+    //     } else {
+    //         System.out.println("Available Products:");
+    //         for (Product product : productCatalog.values()) {
+    //             System.out.println("ID:"+ product.getProductId()+
+    //             "| Name:"+ product.getName()+
+    //             "| Price:"+ product.getPrice()+
+    //             "| Quantity:"+ product.getQuantity()+
+    //             "| Category:"+ product.getCategory());
+    //         }
+    //     }
+    // }
+    public static void searchProductByName(){
+        if(!productCatalog.equals(productCatalog)){
+            System.out.println("Can't find the product!");
+        }
+        else{
+            System.out.println("The item is availabe in the store:");
+            for (Product product : productCatalog.values()){
                 System.out.println("ID:"+ product.getProductId()+
                 "| Name:"+ product.getName()+
                 "| Price:"+ product.getPrice()+
@@ -111,12 +132,11 @@ public class Product {
             }
         }
     }
-
     @Override
     public String toString() {
         return "Product [ID=" + productId + 
         ", Name=" + name + 
-        ", Price=" + price + 
+        ", Price= $" + price + 
         ", Quantity=" + quantity + 
         ", Category=" + category + "]";
     }

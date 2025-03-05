@@ -74,10 +74,10 @@ public String getEmail() {
 
     @Override
     public void displayMyProducts() {
-        System.out.println("Your Products:");
         for (String productId : productIdList) {
             Product product = Product.getProductById(productId);
             if (product != null) {
+                System.out.println("Your Products:");
                 System.out.println(product);
             } else {
                 System.out.println("Product not found.");

@@ -129,7 +129,7 @@ public class Test {
         String productId = scanner.nextLine();
         System.out.print("Enter product name: ");
         String name = scanner.nextLine();
-        System.out.print("Enter product price: ");
+        System.out.print("Enter product price:$ ");
         double price = scanner.nextDouble();
         System.out.print("Enter product quantity: ");
         int quantity = scanner.nextInt();
@@ -161,7 +161,7 @@ public class Test {
         switch (choice) {
             case 1:
                 // Assuming a method to view all available products
-                customer.viewProductDetails();
+                customer.viewProduct();
                 break;
         //     case 2:
         //         System.out.print("Enter product ID to buy: ");
