@@ -70,9 +70,12 @@ public abstract class User{
         String address = scanner.nextLine();
         System.out.println("Enter password: ");
         String password = scanner.nextLine();
-        System.out.println("Enter phone number: ");
+
+        // Validate phone number
+        System.out.print("Enter phone number:");
         String phoneNumber = scanner.nextLine();
-    
+
+        
         // Create the new user
         User newUser;
         if(role.equals("seller")){

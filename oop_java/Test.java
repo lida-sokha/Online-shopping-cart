@@ -47,8 +47,27 @@ public class Test {
         String address = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
-        System.out.print("Enter phone number: ");
-        String phoneNumber = scanner.nextLine();
+       // Validate phone number
+        String phoneNumber = "";
+        while (true) {
+            try {
+                System.out.println("Enter phone number (9 digits): ");
+                phoneNumber = scanner.nextLine();
+
+                // Check if the phone number has exactly 9 digits and contains only numbers
+                if (phoneNumber.length() != 9 || !phoneNumber.matches("[0-9]+")) {
+                    throw new IllegalArgumentException("Invalid phone number. Please enter exactly 9 digits.");
+                }
+
+                // If valid phone number, exit the loop
+                System.out.println("Valid phone number: " + phoneNumber);
+                break;
+            } catch (IllegalArgumentException e) {
+                // Catch the exception and print the error message
+                System.out.println(e.getMessage());
+            }
+        }
+
 
         if (users.containsKey(email)) {
             System.out.println("User with this email already exists! Try logging in.");
