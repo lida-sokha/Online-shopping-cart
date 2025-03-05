@@ -1,12 +1,16 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Customer extends User implements CustomerInterface {
     private static HashMap<String, Customer> customerMap = new HashMap<>(); // Store customers using email as key
     private HashMap<String, Integer> cart; // Store productID and quantity
+    private List<Payment> paymentHistory; // Store customer's payment history
 
     public Customer(String name, String email, String address, String password, String phoneNumber) {
         super(name, email, address, password, phoneNumber, "customer");
         this.cart = new HashMap<>();
+        this.paymentHistory = new ArrayList<>(); // Initialize payment history
         customerMap.put(email, this); // Store customer in HashMap using email as a unique key
     }
 
@@ -19,6 +23,7 @@ public class Customer extends User implements CustomerInterface {
     public static HashMap<String, Customer> getAllCustomers() {
         return customerMap;
     }
+
     // Add product to cart
     @Override
     public void addToCart(String productID, int quantity) {
@@ -42,6 +47,51 @@ public class Customer extends User implements CustomerInterface {
 
         cart.remove(productID); // Remove from cart after purchase
         return true;
+    }
+
+    // Make a payment
+    public boolean makePayment(double amount, String paymentMethod) {
+        Payment payment = new Payment(amount, paymentMethod, this.getEmail()); // Create a new payment
+
+        boolean success = payment.processPayment(); // Process the payment
+        if (success) {
+            paymentHistory.add(payment); // Store successful payments in history
+            System.out.println("Payment successful! Transaction ID: " + payment.getPaymentId());
+        } else {
+            System.out.println("Payment failed! Please try again.");
+        }
+
+        return success;
+    }
+
+    // Request a refund
+    public boolean requestRefund(int paymentId) {
+        for (Payment payment : paymentHistory) {
+            if (payment.getPaymentId() == paymentId) {
+                boolean refundSuccess = payment.refundPayment();
+                if (refundSuccess) {
+                    System.out.println("Refund successful for Payment ID: " + paymentId);
+                    return true;
+                } else {
+                    System.out.println("Refund failed! Payment may not be completed.");
+                    return false;
+                }
+            }
+        }
+        System.out.println("Payment ID not found!");
+        return false;
+    }
+
+    // View payment history
+    public void viewPaymentHistory() {
+        if (paymentHistory.isEmpty()) {
+            System.out.println("No payment history available.");
+        } else {
+            System.out.println("Payment History for " + getEmail() + ":");
+            for (Payment payment : paymentHistory) {
+                System.out.println(payment);
+            }
+        }
     }
 
     // View cart
@@ -71,17 +121,14 @@ public class Customer extends User implements CustomerInterface {
             System.out.println("Product not found.");
         }
     }
-    // view the product from the product catalog
-    public void viewProduct(){
+
+    // View products
+    public void viewProduct() {
         Product.viewProductDetails();
     }
-    //search for the product from the product catalog by name 
-    public void searchProductByName(String searchName){
+
+    // Search product by name
+    public void searchProductByName(String searchName) {
         Product.searchProduct(searchName);
     }
-    // Get customer details
-    // @Override
-    // public String toString() {
-    //     return "Customer{name='" + getName() + "', email='" + getEmail() + "', phone='" + getPhoneNumber() + "'}";
-    //                 }
 }
