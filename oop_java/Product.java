@@ -117,19 +117,25 @@ public class Product {
     //         }
     //     }
     // }
-    public static void searchProductByName(){
-        if(!productCatalog.equals(productCatalog)){
-            System.out.println("Can't find the product!");
-        }
-        else{
-            System.out.println("The item is availabe in the store:");
-            for (Product product : productCatalog.values()){
-                System.out.println("ID:"+ product.getProductId()+
-                "| Name:"+ product.getName()+
-                "| Price:"+ product.getPrice()+
-                "| Quantity:"+ product.getQuantity()+
-                "| Category:"+ product.getCategory());
+    public static void searchProduct(String searchName){
+        boolean found = false;
+        for (Product product : productCatalog.values()){
+            //check if the product name is in the list
+            if(product.getName().toLowerCase().contains(searchName.toLowerCase())){
+                if(!found){
+                    System.out.println("The item is available in the store:");
+                    found = true; // Set flag to true once we find a matching product
+                }
+                System.out.println("ID: " + product.getProductId() +
+                                " | Name: " + product.getName() +
+                                " | Price: $" + String.format("%.2f", product.getPrice()) +
+                                " | Quantity: " + product.getQuantity() +
+                                " | Category: " + product.getCategory());
             }
+        }
+         // If no product was found, inform the user
+        if (!found) {
+            System.out.println("Can't find the product!");
         }
     }
     @Override

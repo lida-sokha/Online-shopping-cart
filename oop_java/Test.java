@@ -149,6 +149,7 @@ public class Test {
     }
 
     private static void customerMenu(Customer customer) {
+        while(true){
         System.out.println("\nCustomer Menu:");
         System.out.println("1. View Products");
         System.out.println("2. Buy Product");
@@ -163,19 +164,17 @@ public class Test {
                 // Assuming a method to view all available products
                 customer.viewProduct();
                 break;
-        //     case 2:
-        //         System.out.print("Enter product ID to buy: ");
-        //         String productId = scanner.nextLine();
-        //         System.out.print("Enter quantity: ");
-        //         int quantity = scanner.nextInt();
-        //         scanner.nextLine(); // Consume newline
-        //         customer.buyProduct(productId, quantity);
-        //         break;
+            case 2:
+                System.out.print("Enter product name to buy: ");
+                String name = scanner.nextLine();
+                customer.searchProductByName(name);
+                break;
         //     case 3:
         //         System.out.println("Logging out...");
         //         return;
             default:
                 System.out.println("Invalid choice. Try again.");
+            }
         }
     }
 }

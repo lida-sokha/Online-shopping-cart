@@ -76,8 +76,8 @@ public class Customer extends User implements CustomerInterface {
         Product.viewProductDetails();
     }
     //search for the product from the product catalog by name 
-    public void searchProductByName(String ProductName){
-        Product.searchProductByName();
+    public void searchProductByName(String searchName){
+        Product.searchProduct(searchName);
     }
     // Get customer details
     // @Override
