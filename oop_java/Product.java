@@ -1,3 +1,4 @@
+package oop_java;
 import java.util.HashMap;
 
 public class Product {

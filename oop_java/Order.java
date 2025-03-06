@@ -1,3 +1,4 @@
+package oop_java;
 import java.util.Date;
 import java.util.List;
 
@@ -5,7 +6,7 @@ public class Order {
     // Private fields to protect data
     private  String orderId;
     private  String userId;
-    private  List<CartItem> items;  // Assuming CartItem class is already defined
+    private  List<Cart> items;  // Assuming CartItem class is already defined
     private  double totalPrice;
     private  double taxRate;  // Tax rate in percentage
     private  double tax;
@@ -14,7 +15,7 @@ public class Order {
     private String status;
 
     // Constructor to initialize fields
-    public Order(String orderId, String userId, List<CartItem> items, double totalPrice, double taxRate, Payment paymentMethod, Date orderDate, String status) {
+    public Order(String orderId, String userId, List<Cart> items, double totalPrice, double taxRate, Payment paymentMethod, Date orderDate, String status) {
         this.orderId = orderId;
         this.userId = userId;
         this.items = items;
@@ -40,7 +41,7 @@ public class Order {
         return userId;
     }
 
-    public List<CartItem> getItems() {
+    public List<Cart> getItems() {
         return items;
     }
 

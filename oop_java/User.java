@@ -1,3 +1,4 @@
+package oop_java;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -91,6 +92,7 @@ public abstract class User{
         System.out.println("Sign up successful as " + role);
 
         //save to file
+
         try (BufferedWriter writer = new BufferedWriter(new java.io.FileWriter("users.txt", true))) {
             writer.write(name + "," + email + "," + address + "," + password + "," + phoneNumber + "," + role + "\n");
             writer.newLine();
@@ -119,7 +121,7 @@ public abstract class User{
                 if (email.equals(storedEmail) && password.equals(storedPassword)) {
                     // Create and return a User object
                     String name = userData[0].trim();
-                    String address = userData[2].trim();
+                    String address = userData[20].trim();
                     String phoneNumber = userData[4].trim();
                     String role = userData[5].trim();
 

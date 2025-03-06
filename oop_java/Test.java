@@ -1,3 +1,4 @@
+package oop_java;
 import java.util.*;
 
 public class Test {
@@ -6,6 +7,8 @@ public class Test {
     private static Seller.SellerDirectory sellerDirectory = new Seller.SellerDirectory();
 
     public static void main(String[] args) {
+        MySQLConnection.getConnection();
+
         while (true) {
             System.out.println("\n1. Sign Up");
             System.out.println("2. Log In");
@@ -235,6 +238,12 @@ public class Test {
                                 String paymentMethod = scanner.nextLine();
                     
                                 customer.makePayment(amount, paymentMethod);
+                            }
+                            else if(paymentChoice==2){
+                                System.out.println("Product added to cart successfully.");
+                            }
+                            else{
+                                System.out.println("Invalid choice. Try again.");
                             }
                         } else {
                             System.out.println("Add to cart failed. Either product not found or insufficient stock.");

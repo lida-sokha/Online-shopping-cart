@@ -1,3 +1,4 @@
+package oop_java;
 public interface CustomerInterface {
         // void addToCart(String productID, int quantity);
         public boolean addToCart(String productId, int quantity);
