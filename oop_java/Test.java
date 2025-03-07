@@ -1,6 +1,5 @@
 package oop_java;
 import java.util.*;
-
 public class Test {
     private static Scanner scanner = new Scanner(System.in);
     private static HashMap<String, User> users = new HashMap<>();
@@ -16,14 +15,14 @@ public class Test {
             System.out.print("Choose an option: ");
 
             int choice = scanner.nextInt();
-            scanner.nextLine(); // Consume newline
+            scanner.nextLine(); // Consume newline 
 
             switch (choice) {
                 case 1:
                     signUp();
                     break;
                 case 2:
-                    login();
+                login();
                     break;
                 case 3:
                     System.out.println("Exiting...");
@@ -71,7 +70,7 @@ public class Test {
             }
         }
 
-
+        User.loadUsersFromFile();
         if (users.containsKey(email)) {
             System.out.println("User with this email already exists! Try logging in.");
             return;
@@ -82,6 +81,7 @@ public class Test {
             users.put(email, seller);
             sellerDirectory.addSeller(seller);
             System.out.println("Sign-up successful as a Seller!");
+            User.saveUserToFile(seller);
             //
             sellerMenu(seller);
         } else if (roleChoice == 2) {
@@ -89,29 +89,47 @@ public class Test {
             users.put(email, customer);
             customerMenu(customer);
             System.out.println("Sign-up successful as a Customer!");
+            User.saveUserToFile(customer);
         } else {
             System.out.println("Invalid role choice! Please try again.");
         }
+        System.out.println("User list after loading from file: " + users);//debug
     }
-
-    private static void login() {
+    
+    
+    private static void login() {//error not read from file
+        User.loadUsersFromFile();
+        
+        // Debugging: Print all loaded users
+     System.out.println("Loaded users:");
+     for (String emailKey : users.keySet()) {
+         System.out.println("User: " + users.get(emailKey).getName() + " Email: " + emailKey);
+     }
         System.out.print("\nEnter email: ");
         String email = scanner.nextLine();
         System.out.print("Enter password: ");
         String password = scanner.nextLine();
 
+
         User user = users.get(email);
 
-        if (user != null && user.getPassword().equals(password)) {
-            System.out.println("Login successful! Welcome, " + user.getName());
-
-            if (user instanceof Seller) {
-                sellerMenu((Seller) user);
-            } else if (user instanceof Customer) {
-                customerMenu((Customer) user);
+        if (user != null) {
+            // Debugging print
+            System.out.println("User found: " + user.getName() + ", Role: " + user.getRole());
+    
+            if (user.getPassword().equals(password)) {
+                System.out.println("Login successful! Welcome, " + user.getName());
+                // Proceed to respective menu
+                if (user instanceof Seller) {
+                    sellerMenu((Seller) user);
+                } else if (user instanceof Customer) {
+                    customerMenu((Customer) user);
+                }
+            } else {
+                System.out.println("Incorrect password. Please try again.");
             }
         } else {
-            System.out.println("Invalid email or password. Please try again.");
+            System.out.println("No user found with email: " + email);
         }
     }
 

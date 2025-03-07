@@ -1,3 +1,4 @@
+package oop_java;
 public interface SellerInterface {
     void addProduct(String productId, String name, double price, int quantity, String category, String description);
     void removeProduct(String productId);
