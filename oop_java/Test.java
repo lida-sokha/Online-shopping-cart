@@ -1,9 +1,11 @@
 package oop_java;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 public class Test {
     private static Scanner scanner = new Scanner(System.in);
-    private static HashMap<String, User> users = new HashMap<>();
-    private static Seller.SellerDirectory sellerDirectory = new Seller.SellerDirectory();
+    
 
     public static void main(String[] args) {
         MySQLConnection.getConnection();
@@ -34,104 +36,105 @@ public class Test {
     }
 
     private static void signUp() {
-        System.out.println("\nSign Up as:");
-        System.out.println("1. Seller");
-        System.out.println("2. Customer");
-        System.out.print("Choose a role: ");
-        int roleChoice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
+    System.out.println("\nSign Up as:");
+    System.out.println("1. Seller");
+    System.out.println("2. Customer");
+    System.out.print("Choose a role: ");
+    int roleChoice = scanner.nextInt();
+    scanner.nextLine(); // Consume newline
 
-        System.out.print("Enter name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter email: ");
-        String email = scanner.nextLine();
-        System.out.print("Enter address: ");
-        String address = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-       // Validate phone number
-        String phoneNumber = "";
-        while (true) {
-            try {
-                System.out.println("Enter phone number (9 digits): ");
-                phoneNumber = scanner.nextLine();
+    System.out.print("Enter name: ");
+    String name = scanner.nextLine();
+    System.out.print("Enter email: ");
+    String email = scanner.nextLine();
+    System.out.print("Enter address: ");
+    String address = scanner.nextLine();
+    System.out.print("Enter password: ");
+    String password = scanner.nextLine();
+    
+    // Validate phone number
+    String phoneNumber = "";
+    while (true) {
+        System.out.println("Enter phone number (9 digits): ");
+        phoneNumber = scanner.nextLine();
+        if (phoneNumber.length() == 9 && phoneNumber.matches("[0-9]+")) {
+            break;
+        }
+        System.out.println("Invalid phone number. Please enter exactly 9 digits.");
+    }
 
-                // Check if the phone number has exactly 9 digits and contains only numbers
-                if (phoneNumber.length() != 9 || !phoneNumber.matches("[0-9]+")) {
-                    throw new IllegalArgumentException("Invalid phone number. Please enter exactly 9 digits.");
+    String userType = (roleChoice == 1) ? "seller" : "customer";
+
+    // Save user to database
+    try (Connection conn = MySQLConnection.getConnection()) {
+        String sql = "INSERT INTO user (fullname, email, password, phone_number, address, user_type) VALUES (?, ?, ?, ?, ?, ?)";
+        try (java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setString(2, email);
+            pstmt.setString(3, password); // Consider hashing the password
+            pstmt.setString(4, phoneNumber);
+            pstmt.setString(5, address);
+            pstmt.setString(6, userType);
+            pstmt.executeUpdate();
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Error saving user to database.");
+        return;
+    }
+
+    System.out.println("Sign-up successful as a " + userType + "!");
+
+    // Navigate to appropriate menu
+    if (roleChoice == 1) {
+        Seller seller = new Seller(name, email, address, password, phoneNumber);
+        sellerMenu(seller);
+    } else {
+        Customer customer = new Customer(name, email, address, password, phoneNumber);
+        customerMenu(customer);
+    }
+}
+
+    
+private static void login() {
+    System.out.print("\nEnter email: ");
+    String email = scanner.nextLine();
+    System.out.print("Enter password: ");
+    String password = scanner.nextLine();
+
+    try (Connection conn = MySQLConnection.getConnection()) {
+        String sql = "SELECT * FROM user WHERE email = ?";
+        try (java.sql.PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try (java.sql.ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String storedPassword = rs.getString("password");
+                    if (storedPassword.equals(password)) { // Compare passwords
+                        String name = rs.getString("fullname");
+                        String userType = rs.getString("user_type");
+
+                        System.out.println("Login successful! Welcome, " + name);
+
+                        if (userType.equals("seller")) {
+                            Seller seller = new Seller(name, email, rs.getString("address"), password, rs.getString("phone_number"));
+                            sellerMenu(seller);
+                        } else {
+                            Customer customer = new Customer(name, email, rs.getString("address"), password, rs.getString("phone_number"));
+                            customerMenu(customer);
+                        }
+                    } else {
+                        System.out.println("Incorrect password. Please try again.");
+                    }
+                } else {
+                    System.out.println("No user found with email: " + email);
                 }
-
-                // If valid phone number, exit the loop
-                System.out.println("Valid phone number: " + phoneNumber);
-                break;
-            } catch (IllegalArgumentException e) {
-                // Catch the exception and print the error message
-                System.out.println(e.getMessage());
             }
         }
-
-        User.loadUsersFromFile();
-        if (users.containsKey(email)) {
-            System.out.println("User with this email already exists! Try logging in.");
-            return;
-        }
-
-        if (roleChoice == 1) {
-            Seller seller = new Seller(name, email, address, password, phoneNumber);
-            users.put(email, seller);
-            sellerDirectory.addSeller(seller);
-            System.out.println("Sign-up successful as a Seller!");
-            User.saveUserToFile(seller);
-            //
-            sellerMenu(seller);
-        } else if (roleChoice == 2) {
-            Customer customer = new Customer(name, email, address, password, phoneNumber);
-            users.put(email, customer);
-            customerMenu(customer);
-            System.out.println("Sign-up successful as a Customer!");
-            User.saveUserToFile(customer);
-        } else {
-            System.out.println("Invalid role choice! Please try again.");
-        }
-        System.out.println("User list after loading from file: " + users);//debug
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Database error during login.");
     }
-    
-    
-    private static void login() {//error not read from file
-        User.loadUsersFromFile();
-        
-        // Debugging: Print all loaded users
-     System.out.println("Loaded users:");
-     for (String emailKey : users.keySet()) {
-         System.out.println("User: " + users.get(emailKey).getName() + " Email: " + emailKey);
-     }
-        System.out.print("\nEnter email: ");
-        String email = scanner.nextLine();
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-
-        User user = users.get(email);
-
-        if (user != null) {
-            // Debugging print
-            System.out.println("User found: " + user.getName() + ", Role: " + user.getRole());
-    
-            if (user.getPassword().equals(password)) {
-                System.out.println("Login successful! Welcome, " + user.getName());
-                // Proceed to respective menu
-                if (user instanceof Seller) {
-                    sellerMenu((Seller) user);
-                } else if (user instanceof Customer) {
-                    customerMenu((Customer) user);
-                }
-            } else {
-                System.out.println("Incorrect password. Please try again.");
-            }
-        } else {
-            System.out.println("No user found with email: " + email);
-        }
-    }
+}
 
     private static void sellerMenu(Seller seller) {
         while (true) {

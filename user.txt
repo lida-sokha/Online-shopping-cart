@@ -1,2 +1,3 @@
 role: Seller,name: lida,gmail: lida@gmail.com,location: pp,password: 12345,phonenumber: 061753730
 Role: Seller, Name: lida, Email: lida12@gmail.com, Address: pp, Password: 1234, Phone: 061753730
+Role: Seller, Name: lida, Email: lida, Address: pp, Password: 123, Phone: 061753730
