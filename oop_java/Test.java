@@ -1,6 +1,7 @@
 package oop_java;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 public class Test {
@@ -182,13 +183,51 @@ private static void login() {
         System.out.print("Enter description: ");
         String description = scanner.nextLine();
 
-        seller.addProduct(productId, name, price, quantity, category, description);
+        String query = "INSERT INTO products (name, price, quantity, category, description) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = MySQLConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(query)) {
+        
+        pstmt.setString(1, name);
+        pstmt.setDouble(2, price);
+        pstmt.setInt(3, quantity);
+        pstmt.setString(4, category);
+        pstmt.setString(5, description);
+
+        int rowsInserted = pstmt.executeUpdate();
+        if (rowsInserted > 0) {
+            System.out.println("Product added successfully!");
+        } else {
+            System.out.println("Failed to add product.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
 
     private static void removeProduct(Seller seller) {
         System.out.print("Enter product ID to remove: ");
-        String productId = scanner.nextLine();
-        seller.removeProduct(productId);
+        int productId = scanner.nextInt();
+        scanner.nextLine();
+
+        // Delete product from database
+    String query = "DELETE FROM products WHERE id = ?";
+
+    try (Connection conn = MySQLConnection.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(query)) {
+        
+        pstmt.setInt(1, productId);
+
+        int rowsDeleted = pstmt.executeUpdate();
+        if (rowsDeleted > 0) {
+            System.out.println("Product removed successfully!");
+        } else {
+            System.out.println("Product ID not found.");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+        
     }
 
     private static void customerMenu(Customer customer) {
