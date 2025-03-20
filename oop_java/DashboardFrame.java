@@ -16,7 +16,7 @@ public class DashboardFrame extends JFrame{
         setLayout(new BorderLayout());
 
         // Create JTable to display products
-        String[] columnNames = {"ID", "Name", "Price", "Quantity", "Category", "Description"};
+        String[] columnNames = {"ID", "Name", "Price", "Quantity", "Category", "Description", "Seller ID"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         productTable = new JTable(model);
         scrollPane = new JScrollPane(productTable);
@@ -38,13 +38,14 @@ public class DashboardFrame extends JFrame{
                 DefaultTableModel model = (DefaultTableModel) productTable.getModel();
                 while (rs.next()) {
                     // Add a row for each product
-                    Object[] row = new Object[6];
+                    Object[] row = new Object[7];
                     row[0] = rs.getInt("id");
                     row[1] = rs.getString("name");
                     row[2] = rs.getInt("price");
                     row[3] = rs.getInt("quantity");
                     row[4] = rs.getString("category");
                     row[5] = rs.getString("description");
+                    row[6] = rs.getInt("seller_id");
                     model.addRow(row);
                 }
             }
@@ -54,14 +55,6 @@ public class DashboardFrame extends JFrame{
         }
     }
 
-    // public DashboardFrame(){
-    //     setTitle("Deshboard");
-    //     setSize(1000,500);
-    //     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //     JLabel welcomeLabel = new JLabel("Welcome to the online system");
-    //     add(welcomeLabel);
-    //     setVisible(true);
-    // }
     public static void main(String[] args) {
         new DashboardFrame(); // This will create and show the GUI window
     }
