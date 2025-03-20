@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 public abstract class User{
     private String name;
-    private static int nextUserID = 0;
     private int userID;
     private String address;
     private String email;
@@ -22,7 +21,7 @@ public abstract class User{
 
     // Constructor
     User(String name, String email, String address, String password, String phoneNumber, String role) {
-        this.userID = ++nextUserID;
+        this.userID = userID;
         this.name = name;
         this.email = email;
         this.address = address;
@@ -49,6 +48,9 @@ public abstract class User{
     }
     public String getAddress(){
         return address;
+    }
+    public int getID(){
+        return userID;
     }
     public User signUp() {
         Scanner scanner = new Scanner(System.in);

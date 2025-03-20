@@ -183,18 +183,19 @@ private static void login() {
         System.out.print("Enter description: ");
         String description = scanner.nextLine();
 
-        String query = "INSERT INTO products (name, price, quantity, category, description) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO products (name, price, quantity, category, description, seller_id) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = MySQLConnection.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(query)) {
+         PreparedStatement stmt = conn.prepareStatement(query)) {
         
-        pstmt.setString(1, name);
-        pstmt.setDouble(2, price);
-        pstmt.setInt(3, quantity);
-        pstmt.setString(4, category);
-        pstmt.setString(5, description);
+        stmt.setString(1, name);
+        stmt.setDouble(2, price);
+        stmt.setInt(3, quantity);
+        stmt.setString(4, category);
+        stmt.setString(5, description);
+        stmt.setInt(6,seller.getID());
 
-        int rowsInserted = pstmt.executeUpdate();
+        int rowsInserted = stmt.executeUpdate();
         if (rowsInserted > 0) {
             System.out.println("Product added successfully!");
         } else {
@@ -204,6 +205,42 @@ private static void login() {
         e.printStackTrace();
     }
 }
+private static void viewProductDetails() {
+    String query = "SELECT id, name, price, quantity, category, description, seller_id FROM products";
+
+    try (Connection conn = MySQLConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query);
+         java.sql.ResultSet rs = stmt.executeQuery()) {
+
+        System.out.println("\nAvailable Products:");
+        System.out.println("----------------------------------------------------------");
+        System.out.printf("%-5s %-20s %-10s %-10s %-15s %-20s\n", "ID", "Name", "Price", "Quantity", "Category", "Seller ID");
+        System.out.println("----------------------------------------------------------");
+
+        boolean hasProducts = false;
+        while (rs.next()) {
+            hasProducts = true;
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            double price = rs.getDouble("price");
+            int quantity = rs.getInt("quantity");
+            String category = rs.getString("category");
+            int sellerId = rs.getInt("seller_id");
+
+            System.out.printf("%-5d %-20s $%-9.2f %-10d %-15s %-10d\n",
+                    id, name, price, quantity, category, sellerId);
+        }
+
+        if (!hasProducts) {
+            System.out.println("No products available.");
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+        System.out.println("Error retrieving products from database.");
+    }
+}
+
 
     private static void removeProduct(Seller seller) {
         System.out.print("Enter product ID to remove: ");
