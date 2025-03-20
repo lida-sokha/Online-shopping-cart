@@ -1,4 +1,8 @@
 package oop_java;
+import java.net.ConnectException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,19 +76,18 @@ public String getEmail() {
             System.out.println("Product not found or you don't have permission to sell this product.");
         }
     }
+// error need to fix
+    // @Override
+    // public void displayMyProducts() {
+    //     try (Connection conn = MySQLConnection.getConnection()){
+    //         String sql = "SELECT * FROM products";
+    //         PreparedStatement pstmt = conn.prepareStatement(sql);
+    //         ResultSet rs = pstmt.executeQuery();
 
-    @Override
-    public void displayMyProducts() {
-        for (String productId : productIdList) {
-            Product product = Product.getProductById(productId);
-            if (product != null) {
-                System.out.println("Your Products:");
-                System.out.println(product);
-            } else {
-                System.out.println("Product not found.");
-            }
-        }
-    }
+    //         System.out.println("\nProduct list:");
+    //         System.out.println("ID | Name | Price | Quantity | Category | Description");
+    //     }
+    // }
 
     // Nested class for managing sellers
     public static class SellerDirectory {
