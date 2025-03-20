@@ -62,28 +62,23 @@ public class SignupFrame extends JFrame{
         String address = addressField.getText();
         String phoneNumber = phoneNumberField.getText();
         String password = new String(passwordField.getPassword());
-        String userType = roleComboBox.getSelectedItem().toString().toLowerCase(); // Normalize input
-
-        // Validate role
-        if (!userType.equals("customer") && !userType.equals("seller")) {
-            JOptionPane.showMessageDialog(this, "Invalid role! Please enter 'customer' or 'seller'.");
-            return; // Stop execution
-        }
+        String userType = roleComboBox.getSelectedItem().toString().toLowerCase(); // Get selected role
+    
         try (Connection conn = MySQLConnection.getConnection()) {
-            String sql = "INSERT INTO user (name, email, address,phone_number, password, user_type) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO user (fullname, email, address, phone_number, password, user_type) VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setString(1, name);
-                pstmt.setString(2, email);
-                pstmt.setString(3, addressField.getText());
-                pstmt.setString(4, phoneNumberField.getText());
-                pstmt.setString(5, password);
-                pstmt.setString(6, userType);
-
-
+                pstmt.setString(1, name); // Full name
+                pstmt.setString(2, email); // Email
+                pstmt.setString(3, address); // Address
+                pstmt.setString(4, phoneNumber); // Phone number
+                pstmt.setString(5, password); // Password
+                pstmt.setString(6, userType); // Role (customer/seller)
+    
                 int rowsInserted = pstmt.executeUpdate();
                 if (rowsInserted > 0) {
                     JOptionPane.showMessageDialog(this, "User registered successfully!");
-                    dispose(); // Close the sign-up window after successful registration
+                    new DashboardFrame();
+                    // dispose(); // Close the sign-up window after successful registration
                 }
             }
         } catch (SQLException ex) {

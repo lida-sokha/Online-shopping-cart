@@ -77,17 +77,17 @@ public String getEmail() {
         }
     }
 // error need to fix
-    @Override
-    public void displayMyProducts() {
-        try (Connection conn = MySQLConnection.getConnection()){
-            String sql = "SELECT * FROM products";
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery();
+    // @Override
+    // public void displayMyProducts() {
+    //     try (Connection conn = MySQLConnection.getConnection()){
+    //         String sql = "SELECT * FROM products";
+    //         PreparedStatement pstmt = conn.prepareStatement(sql);
+    //         ResultSet rs = pstmt.executeQuery();
 
-            System.out.println("\nProduct list:");
-            System.out.println("ID | Name | Price | Quantity | Category | Description");
-        }
-    }
+    //         System.out.println("\nProduct list:");
+    //         System.out.println("ID | Name | Price | Quantity | Category | Description");
+    //     }
+    // }
 
     // Nested class for managing sellers
     public static class SellerDirectory {
