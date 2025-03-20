@@ -45,7 +45,7 @@ public class LoginFrame extends JFrame {
 
         signUpButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new SignupFrame();
+                new SignupFrame().setVisible(true);
             }
         });
 
