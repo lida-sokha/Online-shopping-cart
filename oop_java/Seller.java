@@ -3,6 +3,7 @@ import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,18 +77,35 @@ public String getEmail() {
             System.out.println("Product not found or you don't have permission to sell this product.");
         }
     }
-// error need to fix
-    // @Override
-    // public void displayMyProducts() {
-    //     try (Connection conn = MySQLConnection.getConnection()){
-    //         String sql = "SELECT * FROM products";
-    //         PreparedStatement pstmt = conn.prepareStatement(sql);
-    //         ResultSet rs = pstmt.executeQuery();
+    @Override
+public void displayMyProducts() {
+    try (Connection conn = MySQLConnection.getConnection()) {
+        // Query to fetch products based on seller_id
+        String sql = "SELECT * FROM products WHERE seller_id = (SELECT id FROM user WHERE email = ?)";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, this.getEmail()); // Use current seller's email to find their products
+        ResultSet rs = pstmt.executeQuery();
 
-    //         System.out.println("\nProduct list:");
-    //         System.out.println("ID | Name | Price | Quantity | Category | Description");
-    //     }
-    // }
+        System.out.println("\nProduct list:");
+        System.out.println("ID | Name | Price | Quantity | Category | Description");
+
+        while (rs.next()) {
+            // Displaying the products of the current seller
+            int id = rs.getInt("id");
+            String name = rs.getString("name");
+            double price = rs.getDouble("price");
+            int quantity = rs.getInt("quantity");
+            String category = rs.getString("category");
+            String description = rs.getString("description");
+
+            // Print product details
+            System.out.println(id + " | " + name + " | " + price + " | " + quantity + " | " + category + " | " + description);
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+        System.out.println("Error fetching products from the database.");
+    }
+}
 
     // Nested class for managing sellers
     public static class SellerDirectory {

@@ -41,7 +41,7 @@ public class DashboardFrame extends JFrame{
                     Object[] row = new Object[7];
                     row[0] = rs.getInt("id");
                     row[1] = rs.getString("name");
-                    row[2] = rs.getInt("price");
+                    row[2] = rs.getDouble("price");
                     row[3] = rs.getInt("quantity");
                     row[4] = rs.getString("category");
                     row[5] = rs.getString("description");
