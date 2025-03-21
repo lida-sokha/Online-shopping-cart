@@ -1,7 +1,7 @@
 package oop_java;
 import java.util.HashMap;
 
-public class Product {
+public class Product{
     private String productId;
     private String name;
     private double price;
@@ -21,29 +21,18 @@ public class Product {
         productCatalog.put(productId, this);
     }
 
-    // Getters
-    public String getProductId() {
-        return productId;
+    public void viewProductDetails() {
+        System.out.println("Product ID: " + productId);
+        System.out.println("Name: " + name);
+        System.out.println("Price: $" + price);
+        System.out.println("Quantity: " + quantity);
+        System.out.println("Category: " + category);
+        System.out.println("Description: " + description);
     }
-    public String getName() {
-        return name;
-    }
-    public double getPrice() {
-        return price;
-    }
-    public int getQuantity() {
-        return quantity;
-    }
-    public String getCategory() {
-        return category;
-    }
-    public String getDescription() {
-        return description;
-    }
-    //seller
-    public boolean sell(int quantitySold) {
+
+    public boolean sellProduct(int quantitySold) {
         if (quantitySold > 0 && quantitySold <= quantity) {
-            this.quantity -= quantitySold;
+            this.quantity -= quantitySold;  // Reduce stock
             return true;
         } else {
             System.out.println("Not enough stock to sell.");
@@ -51,100 +40,52 @@ public class Product {
         }
     }
 
-    // Customer functions
-
-    // View product details
-    public static void viewProductDetails() {
-        if (productCatalog.isEmpty()) {
-            System.out.println("No products available in the catalog.");
-        } else {
-            System.out.println("Available Products:");
-            for (Product product : productCatalog.values()) {
-                System.out.println("ID:"+ product.getProductId()+
-                "| Name:"+ product.getName()+
-                "| Price: $"+ product.getPrice()+
-                "| Quantity:"+ product.getQuantity()+
-                "| Category:"+ product.getCategory());
-            }
-        }
-    }
-
-    // Simulate adding a product to cart
-    public void addToCart() {
-        System.out.println(name + " has been added to your cart.");
-    }
-
-    // Simulate purchasing a product
-    public boolean purchaseProduct(int quantityToBuy) {
-        if (quantityToBuy > 0 && quantityToBuy <= quantity) {
-            this.quantity -= quantityToBuy;
-            System.out.println("You have successfully purchased " + quantityToBuy + " of " + name + ".");
-            return true;
-        } else {
-            System.out.println("Not enough stock available.");
-            return false;
-        }
-    }
-
-    // Leave a review
-    public void leaveReview(String review) {
+    public void addReview(String review) {
         System.out.println("Review for " + name + ": " + review);
     }
 
-    // Static methods for catalog management
+    // Getter and Setter methods
+    public String getProductId() {
+        return productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public static void addProduct(Product product) {
-        productCatalog.put(product.getProductId(), product);
+        productCatalog.put(product.productId, product);
     }
 
-    public static Product getProductById(String productId) {
-        return productCatalog.get(productId);
+    public static void removeProduct(String productId) {
+        productCatalog.remove(productId);
     }
-
-    public static Product removeProduct(String productId) {
-        return productCatalog.remove(productId);
-    }
-
-    // public static Product viewProductDetails() {
-    //     if (productCatalog.isEmpty()) {
-    //         System.out.println("No products available in the catalog.");
-    //     } else {
-    //         System.out.println("Available Products:");
-    //         for (Product product : productCatalog.values()) {
-    //             System.out.println("ID:"+ product.getProductId()+
-    //             "| Name:"+ product.getName()+
-    //             "| Price:"+ product.getPrice()+
-    //             "| Quantity:"+ product.getQuantity()+
-    //             "| Category:"+ product.getCategory());
-    //         }
-    //     }
-    // }
-    public static void searchProduct(String searchName){
-        boolean found = false;
-        for (Product product : productCatalog.values()){
-            //check if the product name is in the list
-            if(product.getName().toLowerCase().contains(searchName.toLowerCase())){
-                if(!found){
-                    System.out.println("The item is available in the store:");
-                    found = true; // Set flag to true once we find a matching product
-                }
-                System.out.println("ID: " + product.getProductId() +
-                                " | Name: " + product.getName() +
-                                " | Price: $" + String.format("%.2f", product.getPrice()) +
-                                " | Quantity: " + product.getQuantity() +
-                                " | Category: " + product.getCategory());
-            }
-        }
-         // If no product was found, inform the user
-        if (!found) {
-            System.out.println("Can't find the product!");
+    // Adding product to the cart
+    public static void addToCart(Cart cart, Product product, int quantity) {
+        if (quantity <= product.getQuantity()) {
+            cart.addItem(product, quantity);
+            product.setQuantity(product.getQuantity() - quantity);  // Decrease quantity in stock
+        } else {
+            System.out.println("Not enough stock to add to cart.");
         }
     }
-    @Override
-    public String toString() {
-        return "Product [ID=" + productId + 
-        ", Name=" + name + 
-        ", Price= $" + price + 
-        ", Quantity=" + quantity + 
-        ", Category=" + category + "]";
+    public static void viewCart(Cart cart) {
+        cart.displayCart();
+    }
+
+    public static void checkout(Cart cart) {
+        cart.checkout();
+    }
+
+    public static void saveCartToFile(Cart cart, String filename) {
+        cart.saveCartToFile(filename);
     }
 }

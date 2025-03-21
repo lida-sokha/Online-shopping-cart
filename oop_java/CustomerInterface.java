@@ -1,10 +1,9 @@
 package oop_java;
 public interface CustomerInterface {
         // void addToCart(String productID, int quantity);
-        public boolean addToCart(String productId, int quantity);
-        boolean purchaseProduct(String productID, int quantityToBuy);
-        void viewCart();
-        void leaveReview(String productId, String review);
-        void searchProductByID(String productID);
-        void viewProduct();
+        void addToCart(Cart cart,Product product, int quantity);
+        void viewCart(Cart cart);
+        void checkout(Cart cart);
+        void addReview(String review);
+        void viewProductDetails();
 }
