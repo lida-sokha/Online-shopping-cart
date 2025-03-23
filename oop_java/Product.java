@@ -49,6 +49,7 @@ public class Product{
         return productId;
     }
 
+
     public String getName() {
         return name;
     }
@@ -56,11 +57,18 @@ public class Product{
     public int getQuantity() {
         return quantity;
     }
-
+    public String getCategory() {
+        return category;
+    }
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
-
+    public double getPrice() {
+        return price;
+    }
+    public String getDescription() {
+        return description;
+    }
     public static void addProduct(Product product) {
         productCatalog.put(product.productId, product);
     }
@@ -71,14 +79,11 @@ public class Product{
     // Adding product to the cart
     public static void addToCart(Cart cart, Product product, int quantity) {
         if (quantity <= product.getQuantity()) {
-            cart.addItem(product, quantity);
+            cart.addProduct(product);
             product.setQuantity(product.getQuantity() - quantity);  // Decrease quantity in stock
         } else {
             System.out.println("Not enough stock to add to cart.");
         }
-    }
-    public static void viewCart(Cart cart) {
-        cart.displayCart();
     }
 
     public static void checkout(Cart cart) {
@@ -87,5 +92,24 @@ public class Product{
 
     public static void saveCartToFile(Cart cart, String filename) {
         cart.saveCartToFile(filename);
+    }
+    public Product findProductById(String productID) {
+        for (Product product : productCatalog.values()) {  // Correct way to access values of the map
+            if (product.getProductId().equals(productID)) {
+                return product;  // Product found
+            }
+        }
+        return null;  // Product not found
+    }
+    @Override
+    public String toString() {
+        return "Product{" +
+                "productId='" + productId + '\'' +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", category='" + category + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
