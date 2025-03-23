@@ -1,25 +1,30 @@
 package oop_java;
 import java.util.ArrayList;
+import java.util.List;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Cart {
-    private int cartId;
+    private int cartID;
     private User user;
     private ArrayList<CartItem> items;
     private static int nextCartId = 1;
 
-    public Cart(User user) {
-        this.cartId = nextCartId++;
+    public Cart(User user,int cartID) {
+        this.cartID = nextCartId++;
         this.user = user;
         this.items = new ArrayList<>();
     }
-    public int getCartId() {
-        return cartId;
+    
+    public int getCart() {
+        return cartID;
     }
-
     public User getUser() {
         return user;
+    }
+
+    public List<CartItem> getItems() {
+    return items; // 'items' is the list holding CartItem objects
     }
 
     public void addProduct(Product product){
@@ -62,18 +67,22 @@ public class Cart {
             System.out.println("Cart is empty.");
             return;
         }
-        System.out.println("Cart ID: " + cartId);
-        System.out.println("User ID: " + user.getID());
+        System.out.println("Cart ID: " + cartID); // Accessing cartID
+        if (user != null) {
+            System.out.println("User ID: " + user.getID()); // Accessing user ID
+        } else {
+            System.out.println("User not found.");
+        }
         System.out.println("Items:");
         for (CartItem item : items) {
-            System.out.println(item);
+            System.out.println(item); // Each CartItem's toString() method will be called
         }
     }
 
 
     public void saveCartToFile(String filename) {
         try (FileWriter writer = new FileWriter(filename)) {
-            writer.write("Cart ID: " + cartId + "\n");
+            writer.write("Cart ID: " + cartID + "\n");
             writer.write("User ID: " + user.getID() + "\n");
             writer.write("Items in Cart:\n");
 
@@ -135,6 +144,10 @@ public class Cart {
             return quantity;
         }
 
+        public void clear() {
+            items.clear(); // Clear all items in the cart
+        }
+        
         @Override
         public String toString() {
             return "CartItem [product=" + product.getName() + ", quantity=" + quantity + "]";
