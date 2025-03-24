@@ -1,3 +1,5 @@
+package oop_java;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -65,14 +67,14 @@ public class SellerGUI extends JFrame {
         setVisible(true);
     }
 
-    private void connectToDatabase() {
-        try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database", "your_username", "your_password");
-            System.out.println("Connected to database");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    // private void connectToDatabase() {
+    //     try {
+    //         conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/your_database", "your_username", "your_password");
+    //         System.out.println("Connected to database");
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
 
     private void loadProducts() {
         tableModel.setRowCount(0);
