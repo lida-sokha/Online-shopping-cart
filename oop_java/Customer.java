@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import oop_java.Cart.CartItem;
 
 public class Customer extends User implements CustomerInterface {
@@ -78,41 +80,23 @@ public class Customer extends User implements CustomerInterface {
 }
 
 
-@Override
-    public void checkout(Cart cart) {
-    // Check if the cart is empty
-    if (cart.getItems().isEmpty()) {
-        System.out.println("Cart is empty. Please add items to cart.");
+private void checkout(ActionEvent e) {
+    if (cart.getItems().isEmpty()) {  // Assuming you have a Cart instance
+        JOptionPane.showMessageDialog(this, "Your cart is empty", "Checkout", JOptionPane.WARNING_MESSAGE);
         return;
     }
-
-    System.out.println("Checking out...");
+    
     double total = cart.calculateTotal();
-    System.out.println("Final Total: $" + total);
-
-    // Payment method
-    System.out.print("Enter payment method (Credit Card, PayPal, etc.): ");
-    String paymentMethod = scanner.nextLine();
-
-    // Payment amount
-    System.out.print("Enter payment amount: ");
-    double paymentAmount = scanner.nextDouble();
-    scanner.nextLine(); // Consume newline
-
-    // Create Payment object and process payment
-    Payment payment = new Payment(paymentAmount, paymentMethod, cart.getUser().getEmail());
-    if (payment.processPayment()) {
-        System.out.println("Payment successful!");
-
-        // Save order to database
-        saveOrderToDatabase(cart);
-
-        // Clear the cart after checkout
-        //fix clear function 
-        cart.clear();
-        System.out.println("Checkout complete! Thank you for your purchase.");
-    } else {
-        System.out.println("Payment failed. Please try again.");
+    
+    int confirm = JOptionPane.showConfirmDialog(
+        this, 
+        String.format("Proceed with checkout?\n\nTotal: $%.2f", total),
+        "Confirm Checkout",
+        JOptionPane.YES_NO_OPTION);
+    
+    if (confirm == JOptionPane.YES_OPTION) {
+        PaymentGUI paymentGUI = new PaymentGUI(cart); // Pass the entire cart
+        paymentGUI.setVisible(true);
     }
 }
 
