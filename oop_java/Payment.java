@@ -84,6 +84,35 @@ public class Payment {
             return false;  // Refund not possible if payment wasn't successful
         }
     }
+    public boolean makePayment() {
+        // Simulate payment processing based on payment method
+        System.out.println("Processing payment...");
+
+        // Example handling for different payment methods
+        if (paymentMethod.equalsIgnoreCase("Credit Card")) {
+            return processCreditCardPayment();
+        } else if (paymentMethod.equalsIgnoreCase("PayPal")) {
+            return processPayPalPayment();
+        } else {
+            System.out.println("Unsupported payment method.");
+            return false;
+        }
+    }
+
+    // Simulate processing credit card payment
+    private boolean processCreditCardPayment() {
+        // Here, you would typically connect to a payment gateway to process the payment
+        System.out.println("Processing credit card payment of $" + amount);
+        return true;  // Assume the payment is successful
+    }
+
+    // Simulate processing PayPal payment
+    private boolean processPayPalPayment() {
+        // Here, you would typically connect to PayPal API to process the payment
+        System.out.println("Processing PayPal payment of $" + amount);
+        return true;  // Assume the payment is successful
+    }
+    
     @Override
     public String toString(){// class scope return to string 
         return "Payment{" +

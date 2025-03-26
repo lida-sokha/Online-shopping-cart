@@ -122,7 +122,9 @@ public class Cart {
         items.clear();
         System.out.println("Checkout complete! Thank you for your purchase.");
     }
-
+    public void clear() {
+        items.clear();
+    }
     public class CartItem {
         private Product product;
         private int quantity;

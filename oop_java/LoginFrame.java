@@ -53,19 +53,34 @@ public class LoginFrame extends JFrame {
     }
 
     private void login() {
-        String email = emailField.getText();
-        String password = new String(passwordField.getPassword());
+        String email = emailField.getText().trim();
+        String password = new String(passwordField.getPassword()).trim();
+
+        // Basic validation
+        if (email.isEmpty() || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter both email and password");
+            return;
+        }
 
         try (Connection conn = MySQLConnection.getConnection()) {
-            String sql = "SELECT * FROM user WHERE email = ?";
+            String sql = "SELECT password, user_type FROM user WHERE email = ?";
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, email);
                 try (ResultSet rs = pstmt.executeQuery()) {
                     if (rs.next()) {
                         String storedPassword = rs.getString("password");
+                        String userType = rs.getString("user_type"); // Get the role
+
                         if (storedPassword.equals(password)) {
                             JOptionPane.showMessageDialog(this, "Login Successful!");
-                            new DashboardFrame();  // Open dashboard
+                            
+                            // Redirect based on role
+                            if ("seller".equalsIgnoreCase(userType)) {
+                                new SellerGUI().setVisible(true);
+                            } else {
+                                new CustomerDashboard().setVisible(true);
+                            }
+                            
                             this.dispose(); // Close login window
                         } else {
                             JOptionPane.showMessageDialog(this, "Incorrect password!");
@@ -77,7 +92,7 @@ public class LoginFrame extends JFrame {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Database error!");
+            JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage());
         }
     }
 
@@ -85,4 +100,5 @@ public class LoginFrame extends JFrame {
         new LoginFrame();
     }
 }
+
 

@@ -77,7 +77,7 @@ public class SignupFrame extends JFrame{
                 int rowsInserted = pstmt.executeUpdate();
                 if (rowsInserted > 0) {
                     JOptionPane.showMessageDialog(this, "User registered successfully!");
-                    new DashboardFrame();
+                    new SellerGUI();
                     // dispose(); // Close the sign-up window after successful registration
                 }
             }

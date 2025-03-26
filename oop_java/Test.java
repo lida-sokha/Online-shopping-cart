@@ -151,13 +151,13 @@ private static void login() {
 
             switch (choice) {
                 case 1:
-                    addProduct(seller);
+                    seller.addProduct(null);
                     break;
                 case 2:
-                    seller.displayMyProducts();
+                    seller.viewAllProducts();
                     break;
                 case 3:
-                    removeProduct(seller);
+                    seller.removeProduct(null);
                     break;
                 case 4:
                     System.out.println("Logging out...");
@@ -168,104 +168,6 @@ private static void login() {
         }
     }
 
-    private static void addProduct(Seller seller) {
-        System.out.print("Enter product ID: ");
-        String productId = scanner.nextLine();
-        System.out.print("Enter product name: ");
-        String name = scanner.nextLine();
-        System.out.print("Enter product price:$ ");
-        double price = scanner.nextDouble();
-        System.out.print("Enter product quantity: ");
-        int quantity = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-        System.out.print("Enter category: ");
-        String category = scanner.nextLine();
-        System.out.print("Enter description: ");
-        String description = scanner.nextLine();
-
-        String query = "INSERT INTO products (name, price, quantity, category, description, seller_id) VALUES (?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = MySQLConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query)) {
-        
-        stmt.setString(1, name);
-        stmt.setDouble(2, price);
-        stmt.setInt(3, quantity);
-        stmt.setString(4, category);
-        stmt.setString(5, description);
-        stmt.setInt(6,seller.getID());
-
-        int rowsInserted = stmt.executeUpdate();
-        if (rowsInserted > 0) {
-            System.out.println("Product added successfully!");
-        } else {
-            System.out.println("Failed to add product.");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-}
-private static void viewProductDetails() {
-    String query = "SELECT id, name, price, quantity, category, description, seller_id FROM products";
-
-    try (Connection conn = MySQLConnection.getConnection();
-         PreparedStatement stmt = conn.prepareStatement(query);
-         java.sql.ResultSet rs = stmt.executeQuery()) {
-
-        System.out.println("\nAvailable Products:");
-        System.out.println("----------------------------------------------------------");
-        System.out.printf("%-5s %-20s %-10s %-10s %-15s %-20s\n", "ID", "Name", "Price", "Quantity", "Category", "Seller ID");
-        System.out.println("----------------------------------------------------------");
-
-        boolean hasProducts = false;
-        while (rs.next()) {
-            hasProducts = true;
-            int id = rs.getInt("id");
-            String name = rs.getString("name");
-            double price = rs.getDouble("price");
-            int quantity = rs.getInt("quantity");
-            String category = rs.getString("category");
-            int sellerId = rs.getInt("seller_id");
-
-            System.out.printf("%-5d %-20s $%-9.2f %-10d %-15s %-10d\n",
-                    id, name, price, quantity, category, sellerId);
-        }
-
-        if (!hasProducts) {
-            System.out.println("No products available.");
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-        System.out.println("Error retrieving products from database.");
-    }
-}
-
-
-    private static void removeProduct(Seller seller) {
-        System.out.print("Enter product ID to remove: ");
-        int productId = scanner.nextInt();
-        scanner.nextLine();
-
-        // Delete product from database
-    String query = "DELETE FROM products WHERE id = ?";
-
-    try (Connection conn = MySQLConnection.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(query)) {
-        
-        pstmt.setInt(1, productId);
-
-        int rowsDeleted = pstmt.executeUpdate();
-        if (rowsDeleted > 0) {
-            System.out.println("Product removed successfully!");
-        } else {
-            System.out.println("Product ID not found.");
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-        
-    }
 
     private static void customerMenu(Customer customer) {
         while(true){
@@ -281,13 +183,14 @@ private static void viewProductDetails() {
         switch (choice) {
             case 1:
                 // Assuming a method to view all available products
-                customer.viewProduct();
+                customer.viewProductDetails(null);
                 break;
             case 2:
+            //need to check again 
             while(true){
-                System.out.print("Enter product ID to buy: ");
+                System.out.print("Enter product name to buy: ");
                 String productId = scanner.nextLine();
-                customer.searchProductByID(productId);
+                customer.searchProductByName(null);
                 switch (choice) {
                     case 1:
                         //make to the payment 
@@ -295,7 +198,7 @@ private static void viewProductDetails() {
                             int quantityToBuy = scanner.nextInt(); 
                             scanner.nextLine(); // Consume the newline
 
-                            boolean purchaseSuccess = customer.purchaseProduct(productId, quantityToBuy);
+                            boolean purchaseSuccess = customer.addToCart(productId, quantityToBuy);
 
                             if (purchaseSuccess) {
                                 System.out.print("Enter payment amount: ");
@@ -305,47 +208,52 @@ private static void viewProductDetails() {
                                 System.out.print("Enter payment method (Credit Card, PayPal, etc.): ");
                                 String paymentMethod = scanner.nextLine();
 
-                                customer.makePayment(amount, paymentMethod);
+                                customer.makePayment();
                             } else {
                                 System.out.println("Purchase failed. Either product not found or insufficient stock.");
                             }
                         break;
-                    case 2: 
-                        // Add to cart first and then they have choice to keep in cart first or make the payment
-                        System.out.print("Enter quantity to add to cart: ");
-                        int quantityToAdd = scanner.nextInt();
-                        scanner.nextLine(); // Consume the newline
+                        case 2:
+                    // Add to cart first and then they have a choice to keep in the cart or make the payment
+                    System.out.print("Enter quantity to add to cart: ");
+                    int quantityToAdd = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline
 
-                        boolean addSuccess = customer.addToCart(productId, quantityToAdd);
+                    // Call the addToCart method to add the product to the cart
+                    boolean addSuccess = customer.addToCart(productId, quantityToAdd);  // Make sure addToCart returns a boolean
 
-                        if (addSuccess) {
-                            System.out.println("Product added to cart successfully.");
-                            System.out.println("1. Make payment for items in cart");
-                            System.out.println("2. Keep in cart");
-                            System.out.print("Choose an option: ");
-                            int paymentChoice = scanner.nextInt();
+                    if (addSuccess) {
+                        System.out.println("Product added to cart successfully.");
+                        System.out.println("1. Make payment for items in cart");
+                        System.out.println("2. Keep in cart");
+                        System.out.print("Choose an option: ");
+                        int paymentChoice = scanner.nextInt();
+                        scanner.nextLine(); // Consume newline
+
+                        if (paymentChoice == 1) {
+                            // Ask for the payment amount
+                            System.out.print("Enter payment amount: ");
+                            double amount = scanner.nextDouble();
                             scanner.nextLine(); // Consume newline
 
-                            if (paymentChoice == 1) {
-                                System.out.print("Enter payment amount: ");
-                                double amount = scanner.nextDouble();
-                                scanner.nextLine(); // Consume newline
-                    
-                                System.out.print("Enter payment method (Credit Card, PayPal, etc.): ");
-                                String paymentMethod = scanner.nextLine();
-                    
-                                customer.makePayment(amount, paymentMethod);
-                            }
-                            else if(paymentChoice==2){
-                                System.out.println("Product added to cart successfully.");
-                            }
-                            else{
-                                System.out.println("Invalid choice. Try again.");
-                            }
-                        } else {
-                            System.out.println("Add to cart failed. Either product not found or insufficient stock.");
+                            // Ask for the payment method
+                            System.out.print("Enter payment method (Credit Card, PayPal, etc.): ");
+                            String paymentMethod = scanner.nextLine();
+
+                            // Make the payment using the customer object
+                            customer.checkout(null);
                         }
-                break;
+                        else if(paymentChoice == 2) {
+                            System.out.println("Items are still in the cart.");
+                        }
+                        else {
+                            System.out.println("Invalid choice. Try again.");
+                        }
+                    } else {
+                        System.out.println("Add to cart failed. Either product not found or insufficient stock.");
+                    }
+                    break;
+                
             }
         //     case 3:
         //         System.out.println("Logging out...");

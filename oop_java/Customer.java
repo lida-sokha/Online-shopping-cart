@@ -1,6 +1,7 @@
 package oop_java;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,6 @@ public class Customer extends User implements CustomerInterface {
     private HashMap<String, Integer> cart; // Store productID and quantity
     private List<Payment> paymentHistory; // Store customer's payment history
     private static Scanner scanner = new Scanner(System.in);
-
     public Customer(String name, String email, String address, String password, String phoneNumber) {
         super(name, email, address, password, phoneNumber, "customer");
         this.cart = new HashMap<>();
@@ -33,21 +33,23 @@ public class Customer extends User implements CustomerInterface {
 
 
     @Override 
-    public void addToCart(String productID, int quantity) {
-        // Check if product is in stock
-        Product product = findProductById(productID);
-        if (product != null){
-            int currentQuantity = cart.getOrDefault(productID, 0);
-        if (currentQuantity + quantity <= product.getQuantity()) {
-            cart.put(productID, currentQuantity + quantity);
-            System.out.println("Item added: " + productID);
+    public boolean addToCart(String productId, int quantity) {
+        // Check if the product is available
+        Product product = findProductById(productId);
+        if (product != null) {
+            int currentQuantity = cart.getOrDefault(productId, 0);
+            if (currentQuantity + quantity <= product.getQuantity()) {
+                cart.put(productId, currentQuantity + quantity); // Add the product to the cart
+                return true; // Successfully added
+            } else {
+                System.out.println("Not enough stock to add to cart.");
+            }
         } else {
-            System.out.println("Not enough stock to add to cart.");
+            System.out.println("Product not found.");
         }
-    } else {
-        System.out.println("Product not found.");
+        return false; // If something went wrong (product not found, stock issue)
     }
-    }
+    
     
     @Override
     public void displayCart() {
@@ -154,27 +156,107 @@ public void saveOrderToDatabase(Cart cart) {
         e.printStackTrace();
     }
 }
+public Customer getCustomerById(int customerId) {
+    // Query to retrieve the customer details from the database
+    String query = "SELECT * FROM customers WHERE customerID = ?";
 
-public void addReviewToDatabase(String reviewText) {
-    // Example pseudocode, adjust as needed
+    try (Connection conn = MySQLConnection.getConnection()) {
+        if (conn == null) {
+            System.out.println("Failed to establish database connection.");
+            return null;
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, customerId);  // Set the customer ID
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Assuming you have a Customer class with a constructor to initialize the customer details
+                    return new Customer(
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("address"),
+                        rs.getString("password"),
+                        rs.getString("phoneNumber")
+                    );
+                } else {
+                    System.out.println("Customer not found.");
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing the query.");
+            e.printStackTrace();
+            return null;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error connecting to the database.");
+        e.printStackTrace();
+        return null;
+    }
+}
+
+public Product getProductById(String productID) {
+    // Query to retrieve the product details from the database
+    String query = "SELECT * FROM products WHERE productID = ?";
+
+    try (Connection conn = MySQLConnection.getConnection()) {
+        if (conn == null) {
+            System.out.println("Failed to establish database connection.");
+            return null;
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, productID);  // Set the product ID
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Assuming you have a Product class with a constructor to initialize the product details
+                    return new Product(
+                        rs.getString("productID"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("quantity"),
+                        rs.getString("category"),
+                        rs.getString("description")
+                    );
+                } else {
+                    System.out.println("Product not found.");
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing the query.");
+            e.printStackTrace();
+            return null;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error connecting to the database.");
+        e.printStackTrace();
+        return null;
+    }
+}
+
+public void addReviewToDatabase(int customerId, String productID, String reviewText) {
     String query = "INSERT INTO reviews (userID, productID, reviewText) VALUES (?, ?, ?)";
     
-    // Get a database connection
     try (Connection conn = MySQLConnection.getConnection()) {
-        
-        // Check if the connection is valid
         if (conn == null) {
             System.out.println("Failed to establish database connection.");
             return;
         }
-        //not yet create function getCustomer and getProduct    
+
+        // Get the customer by ID and the product by ID
+        Customer customer = getCustomerById(customerId);
+        Product product = getProductById(productID);
+
+        if (customer == null || product == null) {
+            System.out.println("Customer or Product not found.");
+            return;
+        }
+
         // Prepare the statement
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            // Assuming you have access to the customer and product details
-            Customer customer = getCustomer(); // Get current customer (assuming this is implemented)
-            Product product = getProduct(); // Get current product (assuming this is implemented)
-
-            // Set the parameters for the query
             stmt.setInt(1, customer.getID());  // Set the User ID
             stmt.setString(2, product.getProductId());  // Set the Product ID
             stmt.setString(3, reviewText);  // Set the Review Text
@@ -182,7 +264,6 @@ public void addReviewToDatabase(String reviewText) {
             // Execute the update
             int rowsAffected = stmt.executeUpdate();
 
-            // Check if the review was successfully added
             if (rowsAffected > 0) {
                 System.out.println("Review added to database.");
             } else {
@@ -192,34 +273,46 @@ public void addReviewToDatabase(String reviewText) {
             System.out.println("Error executing the insert statement.");
             e.printStackTrace();
         }
-
     } catch (SQLException e) {
-        // Handle database connection error
         System.out.println("Error connecting to the database.");
         e.printStackTrace();
     }
 }
 
 
-    @Override
-    public void addReview(String review) {
-        // Implement adding review for the customer
-        System.out.println("Adding review...");
-        System.out.println("Review: " + review);
-        // Add review to database
-        addReviewToDatabase(review);
-        System.out.println("Review added successfully!");
-    }
-//error not yet fix
+@Override
+public void addReview(String review) {
+    System.out.println("Adding review...");
+    System.out.println("Review: " + review);
+
+    // Pass the customerId and productID to the method
+    int customerId = this.getID();  // Assuming this refers to the current customer
+    String productID = "exampleProductId";  // Set the product ID as needed
+
+    // Add review to database
+    addReviewToDatabase(customerId, productID, review);
+    System.out.println("Review added successfully!");
+}
+
     @Override
     public Product findProductById(String productID) {
-        // Assuming a product list exists
-        for (Product product : Product.getAllProducts()) {
-            if (product.getProductId().equals(productID)) {
-                return product;
-            }
+        Product product = getProductById(productID);
+        if(product != null){
+            return product;
         }
         return null;
     }
-
+    @Override
+    public Product searchProductByName(String productName) {
+        Product product = searchProductByName(productName);
+        if(product != null){
+            return product;
+        }
+        return null;
+    }
+    @Override
+    public boolean makePayment() {
+        return false;
+    }
 }
+

@@ -1,4 +1,8 @@
 package oop_java;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -102,6 +106,49 @@ public class Product{
         }
         return null;  // Product not found
     }
+    public Product searchProductByName(String productName) {
+    // SQL query to search for products by name
+    String query = "SELECT * FROM products WHERE name LIKE ?";
+
+    try (Connection conn = MySQLConnection.getConnection()) {
+        if (conn == null) {
+            System.out.println("Failed to establish database connection.");
+            return null;
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            // Use LIKE for partial matching (case-insensitive search)
+            stmt.setString(1, "%" + productName + "%");
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                // Check if any product matches
+                if (rs.next()) {
+                    // Assuming you have a Product class with a constructor to initialize the product details
+                    return new Product(
+                        rs.getString("productID"),
+                        rs.getString("name"),
+                        rs.getDouble("price"),
+                        rs.getInt("quantity"),
+                        rs.getString("category"),
+                        rs.getString("description")
+                    );
+                } else {
+                    System.out.println("No product found with the name: " + productName);
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error executing the query.");
+            e.printStackTrace();
+            return null;
+        }
+    } catch (SQLException e) {
+        System.out.println("Error connecting to the database.");
+        e.printStackTrace();
+        return null;
+    }
+}
+
     @Override
     public String toString() {
         return "Product{" +
