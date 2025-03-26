@@ -78,7 +78,7 @@ public class LoginFrame extends JFrame {
                             if ("seller".equalsIgnoreCase(userType)) {
                                 new SellerGUI().setVisible(true);
                             } else {
-                                new CustomerDashboard().setVisible(true);
+                                new CustomerGUI().setVisible(true);
                             }
                             
                             this.dispose(); // Close login window
@@ -94,7 +94,7 @@ public class LoginFrame extends JFrame {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Database error: " + ex.getMessage());
         }
-    }
+    } 
 
     public static void main(String[] args) {
         new LoginFrame();

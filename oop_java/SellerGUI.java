@@ -167,26 +167,35 @@ public class SellerGUI extends JFrame {
         }
     }
 
-    private void addProduct() {
-        try {
-            if (validateFields()) {
-                try (PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO products (id, name, price, quantity, category, description, seller_id) VALUES (?, ?, ?, ?, ?, ?, ?)")) {
-                    ps.setString(1, idField.getText());
-                    ps.setString(2, nameField.getText());
-                    ps.setDouble(3, Double.parseDouble(priceField.getText()));
-                    ps.setInt(4, Integer.parseInt(quantityField.getText()));
-                    ps.setString(5, categoryField.getText());
-                    ps.setString(6, descriptionField.getText());
-                    ps.setString(7, sellerIdField.getText());
-                    ps.executeUpdate();
-                    loadProducts();
-                    clearFields();
-                }
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error adding product: " + e.getMessage(), 
-                "Database Error", JOptionPane.ERROR_MESSAGE);
+    // Replace your current connection handling with this:
+private void addProduct() {
+    Connection conn = null;
+    PreparedStatement ps = null;
+    
+    try {
+        conn = MySQLConnection.getConnection();
+        String sql = "INSERT INTO products (id, name, price, quantity, category, description, seller_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        ps = conn.prepareStatement(sql);
+        
+        ps.setString(1, idField.getText());
+        ps.setString(2, nameField.getText());
+        ps.setDouble(3, Double.parseDouble(priceField.getText()));
+        ps.setInt(4, Integer.parseInt(quantityField.getText()));
+        ps.setString(5, categoryField.getText());
+        ps.setString(6, descriptionField.getText());
+        ps.setString(7, sellerIdField.getText());
+        
+        ps.executeUpdate();
+        loadProducts();
+        clearFields();
+        
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error adding product: " + e.getMessage(), 
+            "Database Error", JOptionPane.ERROR_MESSAGE);
+    } finally {
+        // Close resources manually
+        try { if (ps != null) ps.close(); } catch (SQLException e) { /* ignore */ }
+        try { if (conn != null) conn.close(); } catch (SQLException e) { /* ignore */ }
         }
     }
 
