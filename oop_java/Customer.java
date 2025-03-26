@@ -3,9 +3,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.swing.JOptionPane;
@@ -80,26 +83,83 @@ public class Customer extends User implements CustomerInterface {
 }
 
 
-private void checkout(ActionEvent e) {
-    if (cart.getItems().isEmpty()) {  // Assuming you have a Cart instance
-        JOptionPane.showMessageDialog(this, "Your cart is empty", "Checkout", JOptionPane.WARNING_MESSAGE);
+public void checkout() {
+    if (cart.isEmpty()) {
+        System.out.println("Your cart is empty");
         return;
     }
-    
-    double total = cart.calculateTotal();
-    
-    int confirm = JOptionPane.showConfirmDialog(
-        this, 
-        String.format("Proceed with checkout?\n\nTotal: $%.2f", total),
-        "Confirm Checkout",
-        JOptionPane.YES_NO_OPTION);
-    
-    if (confirm == JOptionPane.YES_OPTION) {
-        PaymentGUI paymentGUI = new PaymentGUI(cart); // Pass the entire cart
-        paymentGUI.setVisible(true);
+
+    // Calculate total
+    double total = 0;
+    for (Map.Entry<String, Integer> entry : cart.entrySet()) {
+        Product product = findProductById(entry.getKey());
+        if (product != null) {
+            total += product.getPrice() * entry.getValue();
+        }
+    }
+
+    System.out.printf("Proceed with checkout?%n%nTotal: $%.2f%n", total);
+    System.out.print("Confirm (yes/no): ");
+    String input = scanner.nextLine().trim().toLowerCase();
+
+    if (input.equals("yes")) {  // Fixed missing parenthesis
+        boolean paymentSuccess = makePayment();
+        
+        if (paymentSuccess) {
+            System.out.println("Payment successful! Order completed.");
+            saveOrderToDatabase(total);  // Pass the total amount
+            cart.clear();
+        } else {
+            System.out.println("Payment failed. Please try again.");
+        }
+    } else {
+        System.out.println("Checkout cancelled.");
     }
 }
 
+// Updated saveOrderToDatabase method
+public void saveOrderToDatabase(double totalAmount) {
+    String query = "INSERT INTO orders (customer_id, total_amount, order_date) VALUES (?, ?, ?)";
+    
+    try (Connection conn = MySQLConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        
+        stmt.setInt(1, this.getID());
+        stmt.setDouble(2, totalAmount);
+        stmt.setString(3, LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        
+        int rowsAffected = stmt.executeUpdate();
+        
+        if (rowsAffected > 0) {
+            System.out.println("Order saved to database successfully.");
+            saveOrderItems();  // Save individual items
+        } else {
+            System.out.println("Failed to save order.");
+        }
+    } catch (SQLException e) {
+        System.out.println("Database error: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
+
+private void saveOrderItems() throws SQLException {
+    String query = "INSERT INTO order_items (order_id, product_id, quantity, price) " +
+                   "SELECT LAST_INSERT_ID(), ?, ?, price FROM products WHERE product_id = ?";
+    
+    try (Connection conn = MySQLConnection.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        
+        for (Map.Entry<String, Integer> entry : cart.entrySet()) {
+            stmt.setString(1, entry.getKey());
+            stmt.setInt(2, entry.getValue());
+            stmt.setString(3, entry.getKey());
+            stmt.addBatch();
+        }
+        
+        stmt.executeBatch();
+        System.out.println("Order items saved successfully.");
+    }
+}
 public void saveOrderToDatabase(Cart cart) {
     // SQL query to insert order into the orders table
     String query = "INSERT INTO orders (cartID, userID, totalAmount) VALUES (?, ?, ?)";

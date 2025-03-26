@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CartGUI extends JFrame {
     private JTextArea cartItemsArea;
@@ -13,6 +14,9 @@ public class CartGUI extends JFrame {
     private JTextArea statusArea;
     private double totalAmount = 0.0;
     private ArrayList<CartItem> cartItems = new ArrayList<>();
+    private Customer currentCustomer;  // Should be initialized when user logs in
+    private HashMap<String, Integer> cart = new HashMap<>();  // Your cart structure
+
 
     public CartGUI() {
         setTitle("Shopping Cart");
@@ -63,18 +67,47 @@ public class CartGUI extends JFrame {
         statusArea.setEditable(false);
         statusArea.setBackground(Color.LIGHT_GRAY);
         JScrollPane statusScrollPane = new JScrollPane(statusArea);
-        add(statusScrollPane, BorderLayout.EAST);
+        add(statusScrollPane, BorderLayout.EAST); 
+        
+        
 
         // Button to proceed with payment
         JButton makePaymentButton = new JButton("Make Payment");
-        makePaymentButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                processPayment();
-            }
-        });
-        bottomPanel.add(makePaymentButton);
-
+        makePaymentButton.addActionListener(e -> {
+    // 1. Get payment details
+    double amount = calculateTotal(); // You need to implement this
+    String customerEmail = currentCustomer.getEmail(); // Get from your customer object
+    
+    // 2. Show payment method selection
+    String[] methods = {"Credit Card", "PayPal"};
+    String selectedMethod = (String) JOptionPane.showInputDialog(
+        null, // or your parent component
+        "Select payment method",
+        "Payment Method",
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        methods,
+        methods[0]);
+    
+    // 3. Process payment if method was selected
+    if (selectedMethod != null) {
+        Payment payment = new Payment(amount, selectedMethod, customerEmail);
+        boolean paymentSuccess = payment.makePayment();
+        
+        if (paymentSuccess) {
+            JOptionPane.showMessageDialog(null, 
+                "Payment successful!\n" + payment.toString(),
+                "Success", 
+                JOptionPane.INFORMATION_MESSAGE);
+            // Additional success handling (clear cart, etc.)
+        } else {
+            JOptionPane.showMessageDialog(null,
+                "Payment failed: " + payment.getPaymentStatus(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+});
         // Populate sample cart items
         addSampleCartItems();
 

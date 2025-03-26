@@ -12,7 +12,7 @@ public class Payment {
     private String customerEmail; 
 
     public Payment(double amount,String paymentMethod, String customerEmail){//class scope is initialize the payid, amount, paymendate
-        this.payID=++nextpaymentID;
+        this.payID=++nextpaymentID; 
         this.amount=amount;
         this.paymentMethod=paymentMethod;
         this.paymentStatus="Pending";
