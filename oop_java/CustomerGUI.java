@@ -1,13 +1,20 @@
 package oop_java;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class CustomerGUI extends JFrame {
     private JComboBox<String> productDropdown;
     private JTextField quantityField;
+     private Connection conn;
+    private DefaultTableModel tableModel;
     private JTextArea cartArea;
     private JButton addToCartButton, viewCartButton, checkoutButton;
 
@@ -47,7 +54,7 @@ public class CustomerGUI extends JFrame {
         
         // Add components to main panel
         mainPanel.add(productPanel, BorderLayout.CENTER);
-        mainPanel.add(cartScrollPane, BorderLayout.EAST);
+        // mainPanel.add(cartScrollPane, BorderLayout.EAST);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         
         setContentPane(mainPanel);
@@ -76,7 +83,27 @@ public class CustomerGUI extends JFrame {
         
         setVisible(true);
     }
-
+     private void loadProducts() {
+        tableModel.setRowCount(0);
+        try (Statement stmt = conn.createStatement(); 
+             ResultSet rs = stmt.executeQuery("SELECT * FROM products")) {
+            while (rs.next()) {
+                tableModel.addRow(new Object[]{
+                    rs.getString("id"), 
+                    rs.getString("name"), 
+                    rs.getDouble("price"), 
+                    rs.getInt("quantity"),
+                    rs.getString("category"),
+                    rs.getString("description"),
+                    rs.getString("seller_id"),
+                    "seller" // Hardcoded role for seller interface
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error loading products: " + e.getMessage(), 
+                "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     private void addToCart() {
         String product = (String) productDropdown.getSelectedItem();
         String quantity = quantityField.getText();
