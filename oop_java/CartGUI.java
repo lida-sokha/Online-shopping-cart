@@ -3,8 +3,8 @@ package oop_java;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CartGUI extends JFrame {
     private JTextArea cartItemsArea;
@@ -13,11 +13,20 @@ public class CartGUI extends JFrame {
     private JTextArea statusArea;
     private double totalAmount = 0.0;
     private ArrayList<CartItem> cartItems = new ArrayList<>();
+    private Customer currentCustomer;
+    private HashMap<String, Integer> cart = new HashMap<>();
 
-    public CartGUI() {
-        setTitle("Shopping Cart");
+    public CartGUI(Customer customer) {
+        this.currentCustomer = customer;
+        initializeUI();
+        addSampleCartItems();
+        setVisible(true);
+    }
+
+    private void initializeUI() {
+        setTitle("Shopping Cart - " + currentCustomer.getName());
         setSize(600, 600);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
 
         // Title label
@@ -25,124 +34,136 @@ public class CartGUI extends JFrame {
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         add(titleLabel, BorderLayout.NORTH);
 
-        // Main panel for displaying cart items
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-
-        // Cart items area (displaying cart details)
+        // Main panel
+        JPanel mainPanel = new JPanel(new BorderLayout());
         cartItemsArea = new JTextArea();
         cartItemsArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(cartItemsArea);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
-
-        // Add cart panel to the center of the window
+        mainPanel.add(new JScrollPane(cartItemsArea), BorderLayout.CENTER);
         add(mainPanel, BorderLayout.CENTER);
 
-        // Bottom panel for payment input
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new GridLayout(3, 2, 10, 10));
+        // Bottom panel
+        JPanel bottomPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Amount field (Total price)
-        JLabel amountLabel = new JLabel("Total Amount ($):");
-        bottomPanel.add(amountLabel);
+        // Total amount
+        bottomPanel.add(new JLabel("Total Amount ($):"));
         amountField = new JTextField();
         amountField.setEditable(false);
         bottomPanel.add(amountField);
 
-        // Payment method dropdown
-        JLabel paymentMethodLabel = new JLabel("Payment Method:");
-        bottomPanel.add(paymentMethodLabel);
-        paymentMethodComboBox = new JComboBox<>(new String[]{"Credit Card", "PayPal"});
+        // Payment method
+        bottomPanel.add(new JLabel("Payment Method:"));
+        paymentMethodComboBox = new JComboBox<>(new String[]{"Credit Card", "PayPal", "Bank Transfer"});
         bottomPanel.add(paymentMethodComboBox);
 
-        // Add bottom panel to the south of the window
+        // Buttons
+        JButton calculateButton = new JButton("Calculate Total");
+        calculateButton.addActionListener(e -> calculateTotal());
+        bottomPanel.add(calculateButton);
+
+        JButton paymentButton = new JButton("Make Payment");
+        paymentButton.addActionListener(this::processPayment);
+        bottomPanel.add(paymentButton);
+
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Status area to display payment results
-        statusArea = new JTextArea();
+        // Status area
+        statusArea = new JTextArea(5, 20);
         statusArea.setEditable(false);
-        statusArea.setBackground(Color.LIGHT_GRAY);
-        JScrollPane statusScrollPane = new JScrollPane(statusArea);
-        add(statusScrollPane, BorderLayout.EAST);
-
-        // Button to proceed with payment
-        JButton makePaymentButton = new JButton("Make Payment");
-        makePaymentButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                processPayment();
-            }
-        });
-        bottomPanel.add(makePaymentButton);
-
-        // Populate sample cart items
-        addSampleCartItems();
-
-        setVisible(true);
+        add(new JScrollPane(statusArea), BorderLayout.EAST);
     }
 
     private void addSampleCartItems() {
-        cartItems.add(new CartItem("Product 1", 2, 20.00));
-        cartItems.add(new CartItem("Product 2", 1, 50.00));
-        cartItems.add(new CartItem("Product 3", 3, 10.00));
-        updateCartItemsArea();
+        // This would normally come from your product database
+        cartItems.add(new CartItem("Smartphone", 1, 599.99));
+        cartItems.add(new CartItem("Headphones", 2, 89.99));
+        updateCartDisplay();
     }
 
-    private void updateCartItemsArea() {
-        StringBuilder cartDetails = new StringBuilder();
+    private void updateCartDisplay() {
+        StringBuilder sb = new StringBuilder();
         totalAmount = 0.0;
-
         for (CartItem item : cartItems) {
-            cartDetails.append(item.toString()).append("\n");
+            sb.append(item.toString()).append("\n");
             totalAmount += item.getTotalPrice();
         }
-
-        cartItemsArea.setText(cartDetails.toString());
-        amountField.setText(String.format("%.2f", totalAmount));
+        cartItemsArea.setText(sb.toString());
+        amountField.setText(String.format("$%.2f", totalAmount));
     }
 
-    private void processPayment() {
-        // Retrieve payment details
-        String amountText = amountField.getText();
-        double amount = totalAmount;
+    public void calculateTotal() {
+        totalAmount = 0.0;
+        for (CartItem item : cartItems) {
+            totalAmount += item.getTotalPrice();
+        }
+        amountField.setText(String.format("$%.2f", totalAmount));
+        statusArea.append("Total calculated: " + amountField.getText() + "\n");
+    }
+
+    private void processPayment(ActionEvent e) {
+        if (totalAmount <= 0) {
+            JOptionPane.showMessageDialog(this, "Your cart is empty", "Checkout", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String paymentMethod = (String) paymentMethodComboBox.getSelectedItem();
-        String customerEmail = "customer@example.com"; // Example email
+        String customerEmail = currentCustomer.getEmail();
 
-        // Create Payment object
-        Payment payment = new Payment(amount, paymentMethod, customerEmail);
+        // Show confirmation dialog
+        int confirm = JOptionPane.showConfirmDialog(this,
+            "Confirm payment of " + amountField.getText() + " via " + paymentMethod + "?",
+            "Confirm Payment",
+            JOptionPane.YES_NO_OPTION);
 
-        // Process payment
-        boolean paymentStatus = payment.makePayment();
-        if (paymentStatus) {
-            statusArea.setText("Payment successful! " + payment.toString());
-        } else {
-            statusArea.setText("Payment failed. Please try again.");
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Create payment using customer's method
+            boolean paymentSuccess = currentCustomer.makePayment();
+
+            if (paymentSuccess) {
+                statusArea.setText("Payment successful!\nCustomer: " + currentCustomer.getEmail());
+                JOptionPane.showMessageDialog(this, "Payment processed successfully!", 
+                                           "Success", JOptionPane.INFORMATION_MESSAGE);
+                // Clear cart after successful payment
+                cartItems.clear();
+                updateCartDisplay();
+                
+                // Save order to database
+                currentCustomer.saveOrderToDatabase(totalAmount);
+            } else {
+                statusArea.setText("Payment failed. Please try again.");
+                JOptionPane.showMessageDialog(this, "Payment failed", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
-    public static void main(String[] args) {
-        new CartGUI();
-    }
-
-    // CartItem class representing an item in the cart
+    // CartItem inner class
     static class CartItem {
-        private String productName;
-        private int quantity;
-        private double price;
+        private final String productName;
+        private final int quantity;
+        private final double unitPrice;
 
-        public CartItem(String productName, int quantity, double price) {
+        public CartItem(String productName, int quantity, double unitPrice) {
             this.productName = productName;
             this.quantity = quantity;
-            this.price = price;
+            this.unitPrice = unitPrice;
         }
 
         public double getTotalPrice() {
-            return quantity * price;
+            return quantity * unitPrice;
         }
 
         @Override
         public String toString() {
-            return productName + " x " + quantity + " = $" + String.format("%.2f", getTotalPrice());
+            return String.format("%s x%d @ $%.2f = $%.2f", 
+                productName, quantity, unitPrice, getTotalPrice());
         }
+    }
+
+    public static void main(String[] args) {
+        // Example usage - in your real application, you would get the logged-in customer
+        Customer sampleCustomer = new Customer("John Doe", "john@example.com", 
+            "123 Main St", "password123", "555-1234");
+        
+        SwingUtilities.invokeLater(() -> new CartGUI(sampleCustomer));
     }
 }
